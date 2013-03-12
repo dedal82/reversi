@@ -55,4 +55,9 @@ public class SimpleCoin implements CoinInterface {
     public String toString() {
         return "SimpleCoin{" + "size=" + size + ", color=" + color + '}';
     }            
+
+    @Override
+    public int getSize() {
+        return size;
+    }
 }
