@@ -4,7 +4,6 @@
  */
 package ua.vynnyk;
 
-import javax.swing.JFrame;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.BoardGameRevers;
 

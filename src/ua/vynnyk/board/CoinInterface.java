@@ -13,7 +13,6 @@ import java.awt.Graphics;
  */
 public interface CoinInterface {
     public void drawCoin(Graphics g, int x, int y);
-    public void drawCoin(Graphics g, int x, int y, int cellWH);
     public void setColor(Color color);
     public void setSize(int size);
     public int getSize();

@@ -38,7 +38,7 @@ public class GameBoard extends JPanel {
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                resizeCoins();
+                resizeCoins();          
             }            
         });
         
@@ -104,15 +104,17 @@ public class GameBoard extends JPanel {
     
     public void drawCoin(Graphics g, int x, int y) {
         final int cellWH = getCellWH();
-        CoinInterface coin = getCoin(game.getPlayer(x, y));
+        CoinInterface coin = getCoin(game.getPlayer(x, y));        
         if (coin != null) {
-            coin.drawCoin(g , x * cellWH + blank , y * cellWH + blank, cellWH);
+            final int delta = blank + (cellWH - coin.getSize())/ 2;
+            coin.drawCoin(g , x * cellWH + delta , y * cellWH + delta);
         }
     } 
     
     private void resizeCoins() {
+        final int size = (getWidth() - 3 * blank * cellsX) / cellsX;
         for (CoinInterface coin: coins.values()) {
-            coin.setSize((getWidth() - 3 * blank * cellsX) / cellsX);                
+            coin.setSize(size);                
         }
     }
         

@@ -34,12 +34,6 @@ public class SimpleCoin implements CoinInterface {
         //g.setColor(Color.BLACK);
         //g.drawOval(x, y, size, size);
     }
-    
-    @Override
-    public void drawCoin(Graphics g, int x, int y, int cellWH) {
-        final int i = (cellWH - size) / 2;
-        drawCoin(g, x + i, y + i);
-    }
 
     @Override
     public void setColor(Color color) {

@@ -9,11 +9,11 @@ package ua.vynnyk.game;
  * @author vynnyk
  */
 public class BoardGameRevers extends AbstractBoardGame {
-    static int NONE = 0;
-    static int LEFT = -1;
-    static int RIGHT = 1;
-    static int UP = -1;
-    static int DOWN = 1;
+    static final int NONE = 0;
+    static final int LEFT = -1;
+    static final int RIGHT = 1;
+    static final int UP = -1;
+    static final int DOWN = 1;
                     
     /**
      *
