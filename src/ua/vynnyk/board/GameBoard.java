@@ -39,7 +39,8 @@ public class GameBoard extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 resizeCoins();          
-            }            
+            }  
+            
         });
         
         this.addMouseListener(new java.awt.event.MouseAdapter() {
