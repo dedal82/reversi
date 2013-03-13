@@ -6,52 +6,32 @@ package ua.vynnyk.board;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import javax.swing.JComponent;
 
 /**
  *
  * @author dedal
  */
-public class SimpleCoin implements CoinInterface {
-    private int size = 50;
+public class SimpleCoin extends JComponent implements CoinInterface {
     private Color color = Color.BLUE;
-    
-    public SimpleCoin() {        
+        
+    private SimpleCoin() {        
     }
     
     public SimpleCoin(Color color) {
         this.color = color;
     }
 
-    public SimpleCoin(int size, Color color) {
-        this.size = size;
-        this.color = color;
-    }
-            
     @Override
-    public void drawCoin(Graphics g, int x, int y) {
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.setColor(color);
-        g.fillOval(x, y, size, size);
-        //g.setColor(Color.BLACK);
-        //g.drawOval(x, y, size, size);
+        g.fillOval(0, 0, getWidth(), getHeight());
     }
 
     @Override
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    @Override
-    public void setSize(int size) {
-        this.size = size;
-    } 
-
-    @Override
-    public String toString() {
-        return "SimpleCoin{" + "size=" + size + ", color=" + color + '}';
-    }            
-
-    @Override
-    public int getSize() {
-        return size;
     }
 }

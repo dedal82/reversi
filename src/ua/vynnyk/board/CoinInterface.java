@@ -5,15 +5,11 @@
 package ua.vynnyk.board;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 /**
  *
  * @author dedal
  */
-public interface CoinInterface {
-    public void drawCoin(Graphics g, int x, int y);
+public interface CoinInterface {    
     public void setColor(Color color);
-    public void setSize(int size);
-    public int getSize();
 }

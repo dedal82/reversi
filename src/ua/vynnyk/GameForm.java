@@ -6,9 +6,9 @@ package ua.vynnyk;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,9 +23,9 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.BoardClickEvent;
 import ua.vynnyk.board.BoardClickEventListener;
-import ua.vynnyk.board.CoinInterface;
+import ua.vynnyk.board.EmptyCoinPool;
 import ua.vynnyk.board.GameBoard;
-import ua.vynnyk.board.SimpleCoin;
+import ua.vynnyk.board.SimpleCoinPool;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.ChangeCountEvent;
 import ua.vynnyk.game.ChangeCountEventListener;
@@ -64,8 +64,8 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            game.newGame();
-                            board.repaint();
+                            board.clear();
+                            game.newGame();                            
                         }
                     });
                 }});
@@ -96,8 +96,9 @@ public class GameForm extends JFrame {
         
         //
         board = new GameBoard();
-        board.setCoin(EnumPlayer.FIRST, new SimpleCoin());
-        board.setCoin(EnumPlayer.SECOND, new SimpleCoin(Color.RED));
+        board.setPoolCoin(EnumPlayer.NONE, new EmptyCoinPool());
+        board.setPoolCoin(EnumPlayer.FIRST, new SimpleCoinPool());
+        board.setPoolCoin(EnumPlayer.SECOND, new SimpleCoinPool(Color.RED));
         board.setGame(game);
         add(board, BorderLayout.CENTER);        
         label = new JLabel("0:0", JLabel.CENTER);
@@ -108,15 +109,7 @@ public class GameForm extends JFrame {
         panel.setLayout(new MigLayout());
         panel.add(label, "wrap");  
         panel.add(new Label("Ходить:"), "align center, wrap");
-        panelActivePlayer = new JPanel() {
-            @Override
-            public void paint(Graphics g) {
-                super.paint(g); 
-                final CoinInterface coin = board.getCoin(game.getActivePlayer());
-                final int point = (getWidth() - coin.getSize()) / 2;
-                coin.drawCoin(g, point, 0);
-            }            
-        };
+        panelActivePlayer = new JPanel();            
         panelActivePlayer.setPreferredSize(new Dimension(150, 150));        
         panel.add(panelActivePlayer);       
         add(panel, BorderLayout.EAST);
@@ -130,14 +123,14 @@ public class GameForm extends JFrame {
         game.addPutCoinListener(new PutCoinEventListener() {
             @Override
             public void PutCoin(PutCoinEvent e) {
-                board.drawCoin(board.getGraphics(), e.getX(), e.getY());               
+                board.drawCoin(e.getX(), e.getY());               
             }            
         });
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
             public void ChangeCount(ChangeCountEvent e) {
                 label.setText(e.getFirst() + ":" + e.getSecond()); 
-                panelActivePlayer.repaint();
+                panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
             }
         });
         game.addGameOverListener(new GameOverEventListener() {
