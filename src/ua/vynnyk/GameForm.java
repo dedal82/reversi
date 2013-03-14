@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,19 +22,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import ua.vynnyk.board.BoardClickEvent;
-import ua.vynnyk.board.BoardClickEventListener;
-import ua.vynnyk.board.EmptyCoinPool;
-import ua.vynnyk.board.GameBoard;
-import ua.vynnyk.board.SimpleCoinPool;
-import ua.vynnyk.game.BoardGameInterface;
-import ua.vynnyk.game.ChangeCountEvent;
-import ua.vynnyk.game.ChangeCountEventListener;
-import ua.vynnyk.game.EnumPlayer;
-import ua.vynnyk.game.GameOverEvent;
-import ua.vynnyk.game.GameOverEventListener;
-import ua.vynnyk.game.PutCoinEvent;
-import ua.vynnyk.game.PutCoinEventListener;
+import ua.vynnyk.board.*;
+import ua.vynnyk.game.*;
 
 /**
  *
@@ -54,8 +44,9 @@ public class GameForm extends JFrame {
     }    
 
     private void initComponents() {
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);        
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);                
         setPreferredSize(new Dimension(701, 621));  
+        setMinimumSize(new Dimension(400, 300));
         
         //
         menuBar = new JMenuBar() {{
@@ -109,8 +100,9 @@ public class GameForm extends JFrame {
         panel.setLayout(new MigLayout());
         panel.add(label, "wrap");  
         panel.add(new Label("Ходить:"), "align center, wrap");
-        panelActivePlayer = new JPanel();            
-        panelActivePlayer.setPreferredSize(new Dimension(150, 150));        
+        panelActivePlayer = new JPanel(new GridLayout());            
+        panelActivePlayer.setPreferredSize(new Dimension(150, 100)); 
+        panelActivePlayer.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 40));
         panel.add(panelActivePlayer);       
         add(panel, BorderLayout.EAST);
         addListeners();
@@ -129,8 +121,10 @@ public class GameForm extends JFrame {
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
             public void ChangeCount(ChangeCountEvent e) {
-                label.setText(e.getFirst() + ":" + e.getSecond()); 
+                label.setText(e.getFirst() + ":" + e.getSecond());
+                panelActivePlayer.removeAll();
                 panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
+                panelActivePlayer.repaint();
             }
         });
         game.addGameOverListener(new GameOverEventListener() {
@@ -148,13 +142,6 @@ public class GameForm extends JFrame {
                 } 
                 JOptionPane.showMessageDialog(frame, winmsg, "Гру завершено", JOptionPane.INFORMATION_MESSAGE);
             }
-        });
-        
-        board.addBoardClickListener(new BoardClickEventListener() {
-            @Override
-            public void BoardClick(BoardClickEvent e) {
-                game.doMove(e.getX(), e.getY());
-            }           
-        });
+        });                
     }
 }

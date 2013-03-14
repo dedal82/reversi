@@ -8,11 +8,11 @@ package ua.vynnyk.board;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EnumMap;
-import java.util.EventListener;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -32,7 +32,7 @@ public class GameBoard extends JPanel {
     private final int lineWidth = 3;
     private final int blank = 5;
     private Map<EnumPlayer, CoinPoolInterface> coins = new EnumMap(EnumPlayer.class);    
-    private JPanel[][] cells;
+    private Cell[][] cells;
     private BoardGameInterface game;
 
     public GameBoard() {        
@@ -60,83 +60,57 @@ public class GameBoard extends JPanel {
     public CoinInterface getCoin(EnumPlayer player) {       
         return coins.get(player).getCoin();
     } 
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        drawBoard(g);
-    }          
-
-    private void drawBoard(Graphics g) {
-          g.setColor(lineColor);
-          g.fillRect(0, 0, getWidth(), getHeight());
-    }    
-    
+                       
     public void drawCoin(int x, int y) {        
         CoinInterface coin = getCoin(game.getPlayer(x, y));        
         if (coin != null) {
             cells[x][y].removeAll();
-            cells[x][y].add((Component) coin, 0);
+            cells[x][y].add((Component) coin);
+            cells[x][y].repaint();
         }
     } 
-        
-    private void clickOnBord(MouseEvent e) {                        
-        final int cellX = (e.getX() - blank) / getCellW();
-        final int cellY = (e.getY() - blank) / getCellH();
-        fireBoardClickEvent(new BoardClickEvent(this, cellX, cellY));
-    }
-
-    private int getCellW() {
-        return (getWidth() - blank * 2) / cellsX;
-    }
-    
-    private int getCellH() {
-        return (getHeight() - blank * 2) / cellsY;
-    }
             
-    public void addBoardClickListener(BoardClickEventListener listener) {
-        listenerList.add(BoardClickEventListener.class, listener);
-    }
-    
-    public void removeBoardClickListener(BoardClickEventListener listener) {
-        listenerList.remove(BoardClickEventListener.class, listener);
-    }
-    
-    private void fireBoardClickEvent(BoardClickEvent e) {
-        EventListener listeners[] = listenerList.getListeners(BoardClickEventListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            ((BoardClickEventListener) listeners[i]).BoardClick(e);            
-        }
-    }  
-
     private void initComponents() {        
+        setBackground(lineColor);
         final Border border = BorderFactory.createEmptyBorder(blank, blank, blank, blank);
         setBorder(border);
-        setLayout(new GridLayout(cellsX, cellsY, blank, blank));
-        cells = new JPanel[cellsX][cellsY];
-        for (int i = 0; i < cellsX; i++) {
-            for (int j = 0; j < cellsY; j++) {
-                final JPanel cell = new JPanel(new GridLayout());
-                cell.setBackground(boardColor);
-                cell.setBorder(border);
-                cells[i][j] = cell;
-                add(cell);
-            }
-            
-        }
-        this.addMouseListener(new java.awt.event.MouseAdapter() {
+        setLayout(new GridLayout(cellsY, cellsX, blank, blank));
+        cells = new Cell[cellsX][cellsY];
+        
+        MouseAdapter listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                clickOnBord(e);
+                final Cell cell = (Cell) e.getSource();
+                game.doMove(cell.getCellX(), cell.getCellY());
             }             
-        });
+        };        
+        for (int y = 0; y < cellsY; y++) {
+            for (int x = 0; x < cellsX; x++) {
+                addCell(x, y, border, listener);
+            }            
+        }                 
     }
 
     public void clear() {
         for (int i = 0; i < cellsX; i++) {
             for (int j = 0; j < cellsY; j++) {
                 cells[i][j].removeAll();
+                cells[i][j].repaint();
             }
         }    
     }
+
+    private void addCell(int x, int y, Border border, MouseAdapter listener) {       
+        final Cell cell = new Cell(x, y, new GridLayout());
+        cell.setBackground(boardColor);
+        cell.setBorder(border);
+        cell.addMouseListener(listener);
+        cells[x][y] = cell;
+        add(cell);
+    }
+
+    @Override
+    public void setBounds(int i, int i1, int i2, int i3) {
+        super.setBounds(i, i1, i2, i2);
+    }    
 }

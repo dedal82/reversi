@@ -62,13 +62,13 @@ public class BoardGameRevers extends AbstractBoardGame {
         if (isInBoard(x, y) && getPlayer(x, y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
             putCoin(x, y, getActivePlayer());
             reversCoins(x, y);
+            if (isChangeble()) {
+                changePlayer();                
+            }    
             fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
             if (isGameOver()) {
                 fireGameOverEvent(new GameOverEvent(this, getWinner()));
-            }
-            else if (isChangeble()) {
-                changePlayer();                 
-            }           
+            }                    
             return true; 
         } 
         return false; 
