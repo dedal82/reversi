@@ -10,7 +10,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -24,6 +23,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
 import ua.vynnyk.game.*;
+import ua.vynnyk.layout.SquareLayout;
 
 /**
  *
@@ -45,7 +45,7 @@ public class GameForm extends JFrame {
 
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);                
-        setPreferredSize(new Dimension(701, 621));  
+        setPreferredSize(new Dimension(800, 680));  
         setMinimumSize(new Dimension(400, 300));
         
         //
@@ -91,15 +91,16 @@ public class GameForm extends JFrame {
         board.setPoolCoin(EnumPlayer.FIRST, new SimpleCoinPool());
         board.setPoolCoin(EnumPlayer.SECOND, new SimpleCoinPool(Color.RED));
         board.setGame(game);
-        add(board, BorderLayout.CENTER);        
+                
+        add(SquareLayout.createSquareContainer(board), BorderLayout.CENTER);        
         label = new JLabel("0:0", JLabel.CENTER);
         label.setPreferredSize(new Dimension(150, 60));
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 50));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));                
         panel = new JPanel();
         panel.setLayout(new MigLayout());
-        panel.add(label, "wrap");  
-        panel.add(new Label("Ходить:"), "align center, wrap");
+        panel.add(label, "wrap 30px");  
+        panel.add(new JLabel("Ходить:"), "align center, wrap");
         panelActivePlayer = new JPanel(new GridLayout());            
         panelActivePlayer.setPreferredSize(new Dimension(150, 100)); 
         panelActivePlayer.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 40));
@@ -107,6 +108,7 @@ public class GameForm extends JFrame {
         add(panel, BorderLayout.EAST);
         addListeners();
         pack();
+        setLocationRelativeTo(null);
     }
 
     private void addListeners() {

@@ -8,7 +8,6 @@ package ua.vynnyk.board;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -70,7 +69,8 @@ public class GameBoard extends JPanel {
         }
     } 
             
-    private void initComponents() {        
+    private void initComponents() {  
+        setAlignmentY(TOP_ALIGNMENT);
         setBackground(lineColor);
         final Border border = BorderFactory.createEmptyBorder(blank, blank, blank, blank);
         setBorder(border);
@@ -107,10 +107,27 @@ public class GameBoard extends JPanel {
         cell.addMouseListener(listener);
         cells[x][y] = cell;
         add(cell);
+    } 
+
+    public Color getBoardColor() {
+        return boardColor;
     }
 
-    @Override
-    public void setBounds(int i, int i1, int i2, int i3) {
-        super.setBounds(i, i1, i2, i2);
+    public void setBoardColor(Color boardColor) {
+        this.boardColor = boardColor;
+        for (int i = 0; i < cellsX; i++) {
+            for (int j = 0; j < cellsY; j++) {
+                cells[i][j].setBackground(boardColor);
+            }            
+        }        
+    }
+
+    public Color getLineColor() {
+        return lineColor;
+    }
+
+    public void setLineColor(Color lineColor) {
+        this.lineColor = lineColor;
+        setBackground(lineColor);
     }    
 }
