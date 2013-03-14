@@ -97,7 +97,7 @@ public class GameForm extends JFrame {
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 50));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));                
         panel = new JPanel();
-        panel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+        panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setLayout(new MigLayout());
         panel.add(label, "wrap 30px");  
         panel.add(new JLabel("Ходить:"), "align center, wrap");
