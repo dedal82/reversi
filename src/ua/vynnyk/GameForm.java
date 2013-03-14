@@ -45,9 +45,8 @@ public class GameForm extends JFrame {
 
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);                
-        setPreferredSize(new Dimension(800, 680));  
-        setMinimumSize(new Dimension(400, 300));
-        
+        setPreferredSize(new Dimension(800, 675));  
+        setMinimumSize(new Dimension(400, 300));        
         //
         menuBar = new JMenuBar() {{
             add(new JMenu("Гра") {{
@@ -98,6 +97,7 @@ public class GameForm extends JFrame {
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 50));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));                
         panel = new JPanel();
+        panel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
         panel.setLayout(new MigLayout());
         panel.add(label, "wrap 30px");  
         panel.add(new JLabel("Ходить:"), "align center, wrap");
