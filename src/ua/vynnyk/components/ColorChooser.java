@@ -9,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.colorchooser.ColorSelectionModel;
 
 /**
  *
