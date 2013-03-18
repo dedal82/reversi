@@ -35,9 +35,11 @@ public class SimpleCoinPool implements CoinPoolInterface {
     }
 
     @Override
-    public void setColor(Color color) {
-        pool.clear();
+    public void setColor(Color color) {        
         this.color = color;        
+        for (SimpleCoin simpleCoin : pool) {
+            simpleCoin.setColor(color);
+        }
     }  
 
     @Override

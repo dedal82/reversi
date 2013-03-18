@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
+import ua.vynnyk.components.CountBoard;
 import ua.vynnyk.game.*;
 import ua.vynnyk.layout.SquareLayout;
 
@@ -33,7 +34,7 @@ public class GameForm extends JFrame {
     private BoardGameInterface game;
     private GameBoard board;
     private JPanel panel;
-    private JLabel label;
+    private CountBoard countBoard;
     private JMenuBar menuBar; 
     private JPanel panelActivePlayer;
 
@@ -101,18 +102,19 @@ public class GameForm extends JFrame {
         board.setGame(game);
                 
         add(SquareLayout.createSquareContainer(board), BorderLayout.CENTER);        
-        label = new JLabel("0:0", JLabel.CENTER);
-        label.setPreferredSize(new Dimension(150, 60));
-        label.setFont(new Font(label.getFont().getName(), Font.BOLD, 50));
-        label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));                
-        panel = new JPanel();
-        panel.setBorder(BorderFactory.createEtchedBorder());
-        panel.setLayout(new MigLayout());
-        panel.add(label, "wrap 30px");  
-        panel.add(new JLabel("Ходить:"), "align center, wrap");
+        
+        countBoard = new CountBoard(board.getCoinColor(EnumPlayer.FIRST),
+                                    board.getCoinColor(EnumPlayer.SECOND));
+        
         panelActivePlayer = new JPanel(new GridLayout());            
         panelActivePlayer.setPreferredSize(new Dimension(150, 100)); 
         panelActivePlayer.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 40));
+        
+        panel = new JPanel();
+        panel.setBorder(BorderFactory.createEtchedBorder());
+        panel.setLayout(new MigLayout());
+        panel.add(countBoard, "wrap 20px");  
+        panel.add(new JLabel("Ходить:"), "align center, wrap");
         panel.add(panelActivePlayer);       
         add(panel, BorderLayout.EAST);
         addListeners();
@@ -132,7 +134,7 @@ public class GameForm extends JFrame {
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
             public void ChangeCount(ChangeCountEvent e) {
-                label.setText(e.getFirst() + ":" + e.getSecond());
+                countBoard.setCount(e.getFirst(), e.getSecond());
                 panelActivePlayer.removeAll();
                 panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
                 panelActivePlayer.repaint();
@@ -178,5 +180,12 @@ public class GameForm extends JFrame {
     
     public void setCoinColor(EnumPlayer player, Color color) {
         board.setCoinColor(player, color);
+        
+        if (player == EnumPlayer.FIRST) {
+            countBoard.setFirstColor(color);
+        } else {
+            countBoard.setSecondColor(color);
+        }        
+        repaint();
     }
 }

@@ -7,6 +7,8 @@ package ua.vynnyk;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -34,6 +36,8 @@ public class OptionsForm extends JDialog {
     private JLabel lineColor;
     private JLabel firstColor;
     private JLabel secondColor;
+    private JButton buttonApply;
+    private JButton buttonCancel;
 
     public OptionsForm(GameForm gameForm, boolean modal) {
         super(gameForm, modal);        
@@ -93,13 +97,20 @@ public class OptionsForm extends JDialog {
         
         tabbedPane.add("Вигляд", colorPanel);
         //Графіка        
+                
+        JPanel buttonPanel = new JPanel();
+                    
+        buttonApply = new JButton("Застосувати");
+        buttonCancel = new JButton("Відмінити");
         
-        JButton button = new JButton("Ок");
-        
-        add(button, BorderLayout.SOUTH);
+        buttonPanel.add(buttonApply);
+        buttonPanel.add(buttonCancel);
+        add(buttonPanel, BorderLayout.SOUTH);
         pack();                        
         setLocationRelativeTo(getParent());
         setResizable(false);
+        
+        addListeners();
     }
     
     private JLabel createColorLabel(Color color, MouseListener listener) {
@@ -109,5 +120,31 @@ public class OptionsForm extends JDialog {
         colorLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         colorLabel.addMouseListener(listener);
         return colorLabel;
+    }
+
+    private void addListeners() {
+        buttonApply.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (gameForm.getBoardColor() != boardColor.getBackground())
+                    gameForm.setBoardColor(boardColor.getBackground());
+                if (gameForm.getLineColor() != lineColor.getBackground())
+                    gameForm.setLineColor(lineColor.getBackground());
+                if (gameForm.getCoinColor(EnumPlayer.FIRST) != firstColor.getBackground())
+                    gameForm.setCoinColor(EnumPlayer.FIRST, firstColor.getBackground());
+                if (gameForm.getCoinColor(EnumPlayer.SECOND) != secondColor.getBackground())
+                    gameForm.setCoinColor(EnumPlayer.SECOND, secondColor.getBackground());                
+                setVisible(false);
+                dispose();
+            }
+        });
+        
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
     }
 }
