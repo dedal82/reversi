@@ -20,5 +20,10 @@ public class EmptyCoinPool implements CoinPoolInterface {
     @Override
     public void setColor(Color color) {
     }
+
+    @Override
+    public Color getColor() {
+       return null; 
+    }
     
 }

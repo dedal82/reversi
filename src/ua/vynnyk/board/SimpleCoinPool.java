@@ -39,4 +39,9 @@ public class SimpleCoinPool implements CoinPoolInterface {
         pool.clear();
         this.color = color;        
     }  
+
+    @Override
+    public Color getColor() {
+       return color; 
+    }
 }

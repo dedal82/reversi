@@ -69,7 +69,16 @@ public class GameForm extends JFrame {
                     });
                 }});
             }});
-            add(new JMenu("Налаштування"));
+            add(new JMenu("Налаштування") {{
+                add(new JMenuItem("Налаштування...") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            new OptionsForm(GameForm.this, true).setVisible(true);
+                        }
+                    });
+                }});
+            }});
             add(new JMenu("Допомога") {{
                 add(new JMenuItem("Про Реверсі...") {{
                     addActionListener(new ActionListener() {
@@ -145,5 +154,29 @@ public class GameForm extends JFrame {
                 JOptionPane.showMessageDialog(frame, winmsg, "Гру завершено", JOptionPane.INFORMATION_MESSAGE);
             }
         });                
+    }
+    
+    public Color getBoardColor() {
+        return board.getBoardColor();
+    }
+    
+    public void setBoardColor(Color color) {
+        board.setBoardColor(color);
+    }
+    
+    public Color getLineColor() {
+        return board.getLineColor();
+    }
+    
+    public void setLineColor(Color color) {
+        board.setLineColor(color);
+    }
+    
+    public Color getCoinColor(EnumPlayer player) {
+        return board.getCoinColor(player);
+    }
+    
+    public void setCoinColor(EnumPlayer player, Color color) {
+        board.setCoinColor(player, color);
     }
 }

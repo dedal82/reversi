@@ -12,5 +12,6 @@ import java.awt.Color;
  */
 public interface CoinPoolInterface {
     public CoinInterface getCoin();
-    public void setColor(Color color);    
+    public void setColor(Color color);
+    public Color getColor();
 }

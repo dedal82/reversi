@@ -130,4 +130,12 @@ public class GameBoard extends JPanel {
         this.lineColor = lineColor;
         setBackground(lineColor);
     }    
+    
+    public Color getCoinColor(EnumPlayer player) {
+        return coins.get(player).getColor();
+    }
+    
+    public void setCoinColor(EnumPlayer player, Color color) {
+        coins.get(player).setColor(color);
+    }
 }
