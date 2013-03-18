@@ -7,12 +7,11 @@ package ua.vynnyk;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -54,17 +53,31 @@ public class OptionsForm extends JDialog {
         JPanel colorPanel = new JPanel(new MigLayout("fillx, wrap 2", "[align right]10[max]", ""));
         colorPanel.setBorder(BorderFactory.createTitledBorder("Колір"));
         
+        MouseListener colorLabelListener = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                final JComponent colorComponent = (JComponent) e.getSource();
+                Color newColor = ColorChooser.showDialog(
+                                     OptionsForm.this, 
+                                     "Виберіть колір", 
+                                     colorComponent.getBackground());            
+                if (newColor != null) {
+                    colorComponent.setBackground(newColor);
+                }
+            }            
+        };
+        
         JLabel boardColorLabel = new JLabel("Клітинки");
-        boardColor = createColorLabel(gameForm.getBoardColor());
+        boardColor = createColorLabel(gameForm.getBoardColor(), colorLabelListener);
         
         JLabel lineColorLabel = new JLabel("Лінії");
-        lineColor = createColorLabel(gameForm.getLineColor());
+        lineColor = createColorLabel(gameForm.getLineColor(), colorLabelListener);
         
         JLabel firstColorLabel = new JLabel("Перший гравець");
-        firstColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.FIRST));
+        firstColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.FIRST), colorLabelListener);
         
         JLabel secondColorLabel = new JLabel("Другий гравець");
-        secondColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.SECOND));
+        secondColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.SECOND), colorLabelListener);
         
         colorPanel.add(boardColorLabel);
         colorPanel.add(boardColor, "grow");
@@ -89,24 +102,12 @@ public class OptionsForm extends JDialog {
         setResizable(false);
     }
     
-    private JLabel createColorLabel(Color color) {
+    private JLabel createColorLabel(Color color, MouseListener listener) {
         final JLabel colorLabel = new JLabel();
         colorLabel.setOpaque(true);
         colorLabel.setBackground(color);
         colorLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        colorLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                final JComponent colorComponent = (JComponent) e.getSource();
-                Color newColor = ColorChooser.showDialog(
-                                     OptionsForm.this, 
-                                     "Виберіть колір", 
-                                     colorComponent.getBackground());            
-                if (newColor != null) {
-                    colorComponent.setBackground(newColor);
-                }
-            }            
-        });
+        colorLabel.addMouseListener(listener);
         return colorLabel;
     }
 }
