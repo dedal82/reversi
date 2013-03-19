@@ -8,7 +8,7 @@ package ua.vynnyk.game;
  *
  * @author vynnyk
  */
-public class BoardGameRevers extends AbstractBoardGame {
+public class BoardGameReversi extends AbstractBoardGame {
     static final int NONE = 0;
     static final int LEFT = -1;
     static final int RIGHT = 1;
@@ -18,7 +18,7 @@ public class BoardGameRevers extends AbstractBoardGame {
     /**
      *
      */
-    public BoardGameRevers() {
+    public BoardGameReversi() {
         super();        
     }
     
@@ -27,7 +27,7 @@ public class BoardGameRevers extends AbstractBoardGame {
      * @param x - розмір гри по-горизонталі
      * @param y - розмір гри по-вертикалі
      */
-    public BoardGameRevers(int x, int y) {        
+    public BoardGameReversi(int x, int y) {        
         super(x, y);
     }
     

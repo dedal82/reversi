@@ -8,11 +8,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -20,6 +21,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.FileChooserUI;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
 import ua.vynnyk.components.CountBoard;
@@ -50,8 +54,10 @@ public class GameForm extends JFrame {
         setMinimumSize(new Dimension(400, 300));        
         //
         menuBar = new JMenuBar() {{
-            add(new JMenu("Гра") {{
-                add(new JMenuItem("Нова гра") {{
+            
+            add(new JMenu("Game") {{
+                
+                add(new JMenuItem("New Game") {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -60,18 +66,61 @@ public class GameForm extends JFrame {
                         }
                     });
                 }});
+                
+                add(new JMenuItem("Undo Move") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            //NOT IMPLEMENTED YET
+                        }
+                    });
+                }});
+                
+                add(new JMenuItem("Show The Best Move") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            //NOT IMPLEMENTED YET                          
+                        }
+                    });
+                }});
+                
                 addSeparator();
-                add(new JMenuItem("Вихід") {{
+                
+                add(new JMenuItem("Save Game") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            saveGame();
+                        }
+                    });
+                }});
+                
+                add(new JMenuItem("Load Game") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            loadGame();                           
+                        }
+                    });
+                }});
+                
+                addSeparator();
+                
+                add(new JMenuItem("Exit") {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             System.exit(0);
                         }
                     });
-                }});
+                }});                
             }});
-            add(new JMenu("Налаштування") {{
-                add(new JMenuItem("Налаштування...") {{
+            
+            add(new JMenu("Options") {{
+                
+                add(new JMenuItem("Options...") {{
+                    
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -80,8 +129,10 @@ public class GameForm extends JFrame {
                     });
                 }});
             }});
-            add(new JMenu("Допомога") {{
-                add(new JMenuItem("Про Реверсі...") {{
+            
+            add(new JMenu("Help") {{
+                
+                add(new JMenuItem("About...") {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -134,10 +185,7 @@ public class GameForm extends JFrame {
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
             public void ChangeCount(ChangeCountEvent e) {
-                countBoard.setCount(e.getFirst(), e.getSecond());
-                panelActivePlayer.removeAll();
-                panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
-                panelActivePlayer.repaint();
+                changeCount(e.getFirst(), e.getSecond());
             }
         });
         game.addGameOverListener(new GameOverEventListener() {
@@ -187,5 +235,40 @@ public class GameForm extends JFrame {
             countBoard.setSecondColor(color);
         }        
         repaint();
+    }
+    
+    private void saveGame() {
+        final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
+        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {       
+            GameUtility.saveGame(game, fc.getSelectedFile());            
+        }
+    }
+    
+    private void loadGame() {
+        final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {       
+            game = GameUtility.loadGame(fc.getSelectedFile());   
+            refreshState(); // to adjust view to model state;
+        }        
+    }
+    
+    // change count and active player on view
+    private void changeCount(int first, int second) {
+        countBoard.setCount(first, second);
+        panelActivePlayer.removeAll();
+        panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
+        panelActivePlayer.repaint();
+    }
+
+    //refresh data from model to view
+    private void refreshState() {
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                board.drawCoin(i, j);
+            }            
+        }
+        changeCount(game.getCount(EnumPlayer.FIRST), game.getCount(EnumPlayer.SECOND));
     }
 }

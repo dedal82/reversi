@@ -5,7 +5,7 @@
 package ua.vynnyk;
 
 import ua.vynnyk.game.BoardGameInterface;
-import ua.vynnyk.game.BoardGameRevers;
+import ua.vynnyk.game.BoardGameReversi;
 
 /**
  *
@@ -17,7 +17,7 @@ public class Reversi {
      * @param args the command line arguments
      */
     public static void main(String[] args) {         
-        final BoardGameInterface game = new BoardGameRevers();
+        final BoardGameInterface game = new BoardGameReversi();
         setLookAndFeel();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

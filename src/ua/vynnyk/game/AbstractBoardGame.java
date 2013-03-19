@@ -4,6 +4,7 @@
  */
 package ua.vynnyk.game;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EventListener;
@@ -14,7 +15,7 @@ import javax.swing.event.EventListenerList;
  *
  * @author dedal
  */
-abstract class AbstractBoardGame implements BoardGameInterface {
+abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     private int cellsX = 8;
     private int cellsY = 8;
     private EnumPlayer[][] board;
