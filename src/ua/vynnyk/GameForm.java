@@ -11,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -21,9 +20,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.FileChooserUI;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
 import ua.vynnyk.components.CountBoard;
@@ -44,7 +41,7 @@ public class GameForm extends JFrame {
 
     public GameForm(BoardGameInterface game) {
         this.game = game;
-        setTitle("Реверсі");
+        setTitle("Reversi");
         initComponents();        
     }    
 
@@ -87,7 +84,7 @@ public class GameForm extends JFrame {
                 
                 addSeparator();
                 
-                add(new JMenuItem("Save Game") {{
+                add(new JMenuItem("Save Game...") {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -96,7 +93,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(new JMenuItem("Load Game") {{
+                add(new JMenuItem("Load Game...") {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -165,7 +162,7 @@ public class GameForm extends JFrame {
         panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setLayout(new MigLayout());
         panel.add(countBoard, "wrap 20px");  
-        panel.add(new JLabel("Ходить:"), "align center, wrap");
+        panel.add(new JLabel("Turn"), "align center, wrap");
         panel.add(panelActivePlayer);       
         add(panel, BorderLayout.EAST);
         addListeners();
@@ -195,13 +192,13 @@ public class GameForm extends JFrame {
                 final String winmsg;
                 final EnumPlayer winner = e.getWinner();
                 if (winner == EnumPlayer.FIRST) {
-                    winmsg = "Виграв перший гравець";
+                    winmsg = "First player win game!";
                 } else if (winner == EnumPlayer.SECOND) {
-                    winmsg = "Виграв другий гравець";
+                    winmsg = "Second player win game!";
                 } else {
-                    winmsg = "Бойова нічия!";
+                    winmsg = "Drawn game!";
                 } 
-                JOptionPane.showMessageDialog(frame, winmsg, "Гру завершено", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, winmsg, "Game over", JOptionPane.INFORMATION_MESSAGE);
             }
         });                
     }
@@ -249,7 +246,10 @@ public class GameForm extends JFrame {
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {       
-            game = GameUtility.loadGame(fc.getSelectedFile());   
+            game = GameUtility.loadGame(fc.getSelectedFile());
+            board.clear();
+            board.setGame(game);
+            addListeners();
             refreshState(); // to adjust view to model state;
         }        
     }
@@ -264,8 +264,8 @@ public class GameForm extends JFrame {
 
     //refresh data from model to view
     private void refreshState() {
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
+        for (int i = 0; i < game.getWidth(); i++) {
+            for (int j = 0; j < game.getHeight(); j++) {
                 board.drawCoin(i, j);
             }            
         }

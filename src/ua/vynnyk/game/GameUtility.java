@@ -4,12 +4,12 @@
  */
 package ua.vynnyk.game;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,9 +25,9 @@ public class GameUtility {
      * @param file - saving file
      */
     public static void saveGame(BoardGameInterface game, File file) {
-        final AbstractBoardGame g = (AbstractBoardGame) game;  
+        //final AbstractBoardGame g = (AbstractBoardGame) game;  
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
-            out.writeObject(g);
+            out.writeObject(game);
         } catch (IOException ex) {
             Logger.getLogger(GameUtility.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,13 +38,12 @@ public class GameUtility {
      * @param file - file to load
      * @return - loaded game
      */
-    public static BoardGameInterface loadGame(File file) {
-        AbstractBoardGame g = null;  
+    public static BoardGameInterface loadGame(File file) {        
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-            g = (AbstractBoardGame) in.readObject();
+            return (BoardGameInterface) in.readObject();
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(GameUtility.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return g;
+        return null;
     }
 }

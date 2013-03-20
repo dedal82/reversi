@@ -61,7 +61,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     public boolean doMove(int x, int y) {
         if (isInBoard(x, y) && getPlayer(x, y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
             putCoin(x, y, getActivePlayer());
-            reversCoins(x, y);
+            reversCoins(x, y, true);
             if (isChangeble()) {
                 changePlayer();                
             }    
@@ -74,18 +74,18 @@ public class BoardGameReversi extends AbstractBoardGame {
         return false; 
     }           
     
-    private void reversCoins(int x, int y) {
-        reversDirection(x, y, NONE, UP);    //вверх
-        reversDirection(x, y, NONE, DOWN);  //вниз
-        reversDirection(x, y, LEFT, NONE);  // вліво
-        reversDirection(x, y, RIGHT, NONE); //  вправо
-        reversDirection(x, y, LEFT, UP);    // лівий верх
-        reversDirection(x, y, RIGHT, UP);   // правий верх
-        reversDirection(x, y, RIGHT, DOWN); // правий низ
-        reversDirection(x, y, LEFT, DOWN);  // лівий низ   
+    private int reversCoins(int x, int y, boolean revers) {
+        return reversDirection(x, y, NONE, UP, revers) +    //вверх
+               reversDirection(x, y, NONE, DOWN, revers) +  //вниз
+               reversDirection(x, y, LEFT, NONE, revers) +  // вліво
+               reversDirection(x, y, RIGHT, NONE, revers) + //  вправо
+               reversDirection(x, y, LEFT, UP, revers) +    // лівий верх
+               reversDirection(x, y, RIGHT, UP, revers) +   // правий верх
+               reversDirection(x, y, RIGHT, DOWN, revers) + // правий низ
+               reversDirection(x, y, LEFT, DOWN, revers);   // лівий низ   
     }
     
-    private void reversDirection(int x, int y,int dX, int dY) {       
+    private int reversDirection(int x, int y,int dX, int dY, boolean revers) {       
         boolean needRevers = false;
         int countRevers = 0;
         int i = x + dX;
@@ -96,18 +96,21 @@ public class BoardGameReversi extends AbstractBoardGame {
             } else if (getPlayer(i, j) == getActivePlayer()) {
                 if (countRevers > 0) {
                     needRevers = true;
+                    break;
                 }                
             } else if (getPlayer(i, j) == EnumPlayer.NONE) {
+                countRevers = 0;
                 break;
             }
             i = i + dX;
             j = j + dY;
         }
-        if (needRevers) {
+        if (revers && needRevers) {
             for (int k = 1; k <= countRevers; k++) {
                 putCoin(x + dX * k, y + dY * k, getActivePlayer());
             }
         }
+        return countRevers;
     }
     
     // визначає чи можна передати хід іншому гравцеві
@@ -151,4 +154,6 @@ public class BoardGameReversi extends AbstractBoardGame {
             return EnumPlayer.NONE;
         }
     }
+    
+    
 }

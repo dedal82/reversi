@@ -21,7 +21,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     private EnumPlayer[][] board;
     private EnumPlayer activePlayer = EnumPlayer.FIRST;    
     private Map<EnumPlayer, Integer> score = new EnumMap(EnumPlayer.class);    
-    private EventListenerList listenerList = new EventListenerList();
+    private EventListenerList listenerList = new EventListenerList();    
 
     AbstractBoardGame() {
         board = new EnumPlayer[cellsX][cellsY];        
@@ -154,4 +154,9 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
             ((ChangeCountEventListener) listeners[i]).ChangeCount(e);            
        }                    
     } 
+    
+    @Override
+    public String toString() {
+        return "AbstractBoardGame{" + "cellsX=" + cellsX + ", cellsY=" + cellsY + ", board=" + Arrays.deepToString(board) + ", activePlayer=" + activePlayer + ", score=" + score + ", listenerList=" + listenerList + '}';
+    }
 }
