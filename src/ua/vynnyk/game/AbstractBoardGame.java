@@ -24,13 +24,15 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     private EventListenerList listenerList = new EventListenerList();    
 
     AbstractBoardGame() {
-        board = new EnumPlayer[cellsX][cellsY];        
+        board = new EnumPlayer[cellsX][cellsY]; 
+        EmptyBoard();
     }
     
     AbstractBoardGame(int x, int y) {        
         cellsX = x;
         cellsY = y;            
         board = new EnumPlayer[cellsX][cellsY];
+        EmptyBoard();
     }
         
     @Override
@@ -63,7 +65,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
                y >= 0 && y < getHeight(); 
     } 
     
-    void EmptyBoard() {
+    final void EmptyBoard() {
         for (EnumPlayer[] row: board) {
             Arrays.fill(row, EnumPlayer.NONE);
         }   

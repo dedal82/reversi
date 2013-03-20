@@ -61,12 +61,12 @@ public class GameBoard extends JPanel {
     } 
                        
     public void drawCoin(int x, int y) {        
-        CoinInterface coin = getCoin(game.getPlayer(x, y));        
-        if (coin != null) {
-            cells[x][y].removeAll();
-            cells[x][y].add((Component) coin);
-            cells[x][y].repaint();
+        CoinInterface coin = getCoin(game.getPlayer(x, y));
+        cells[x][y].removeAll();
+        if (coin != null) {            
+            cells[x][y].add((Component) coin);            
         }
+        cells[x][y].repaint();
     } 
             
     private void initComponents() {  

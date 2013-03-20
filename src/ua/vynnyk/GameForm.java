@@ -247,7 +247,6 @@ public class GameForm extends JFrame {
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {       
             game = GameUtility.loadGame(fc.getSelectedFile());
-            board.clear();
             board.setGame(game);
             addListeners();
             refreshState(); // to adjust view to model state;
