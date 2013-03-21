@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
+import ua.vynnyk.game.GameCell;
 
 /**
  *
@@ -61,7 +62,7 @@ public class GameBoard extends JPanel {
     } 
                        
     public void drawCoin(int x, int y) {        
-        CoinInterface coin = getCoin(game.getPlayer(x, y));
+        CoinInterface coin = getCoin(game.getPlayer(new GameCell(x, y)));
         cells[x][y].removeAll();
         if (coin != null) {            
             cells[x][y].add((Component) coin);            
@@ -81,7 +82,7 @@ public class GameBoard extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 final Cell cell = (Cell) e.getSource();
-                game.doMove(cell.getCellX(), cell.getCellY());
+                game.doMove(new GameCell(cell.getCellX(), cell.getCellY()));
             }             
         };        
         for (int y = 0; y < cellsY; y++) {
@@ -137,5 +138,13 @@ public class GameBoard extends JPanel {
     
     public void setCoinColor(EnumPlayer player, Color color) {
         coins.get(player).setColor(color);
+    }
+
+    public void refreshCoins() {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                drawCoin(i, j);
+            }            
+        }
     }
 }

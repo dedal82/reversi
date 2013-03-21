@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.event.EventListenerList;
 
@@ -22,6 +23,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     private EnumPlayer activePlayer = EnumPlayer.FIRST;    
     private Map<EnumPlayer, Integer> score = new EnumMap(EnumPlayer.class);    
     private EventListenerList listenerList = new EventListenerList();    
+    private Map<String, Object> gameOptions = new HashMap<>();
 
     AbstractBoardGame() {
         board = new EnumPlayer[cellsX][cellsY]; 
@@ -36,7 +38,11 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     }
         
     @Override
-    public EnumPlayer getPlayer(int x, int y) {
+    public EnumPlayer getPlayer(GameCell cell) {
+        return getPlayer(cell.getX(), cell.getY());          
+    }
+    
+    EnumPlayer getPlayer(int x, int y) {        
         if (isInBoard(x, y)) {
             return board[x][y];
         } else {
@@ -44,13 +50,17 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
         }          
     } 
         
-    void setPlayer(int x, int y, EnumPlayer player) {
+    void setPlayer(GameCell cell , EnumPlayer player) {
+        setPlayer(cell.getX(), cell.getY(), player);
+    } 
+    
+    void setPlayer(int x, int y , EnumPlayer player) {
         if (isInBoard(x, y)) { 
             decCount(getPlayer(x, y));
             board[x][y] = player; 
             incCount(player);            
         }
-    } 
+    }
     
     private void incCount(EnumPlayer player) {        
         setCount(player, getCount(player) + 1);
@@ -105,7 +115,22 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     public int getHeight() {
         return cellsY;
     }
-                  
+
+    @Override
+    public void setOption(String option, Object value) {
+        gameOptions.put(option, value);
+    }
+
+    @Override
+    public Object getOption(String option) {
+        return gameOptions.get(option);
+    }
+            
+    @Override
+    public String toString() {
+        return "AbstractBoardGame{" + "cellsX=" + cellsX + ", cellsY=" + cellsY + ", board=" + Arrays.deepToString(board) + ", activePlayer=" + activePlayer + ", score=" + score + ", listenerList=" + listenerList + '}';
+    }
+    
     @Override
     public void addGameOverListener(GameOverEventListener listener) {
         listenerList.add(GameOverEventListener.class, listener);
@@ -155,10 +180,5 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
         for (int i = 0; i < listeners.length; i++) {
             ((ChangeCountEventListener) listeners[i]).ChangeCount(e);            
        }                    
-    } 
-    
-    @Override
-    public String toString() {
-        return "AbstractBoardGame{" + "cellsX=" + cellsX + ", cellsY=" + cellsY + ", board=" + Arrays.deepToString(board) + ", activePlayer=" + activePlayer + ", score=" + score + ", listenerList=" + listenerList + '}';
-    }
+    }         
 }

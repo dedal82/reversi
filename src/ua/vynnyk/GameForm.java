@@ -114,6 +114,29 @@ public class GameForm extends JFrame {
                 }});                
             }});
             
+            add(new JMenu("Network") {{
+                
+                add(new JMenuItem("Create Network Game") {{
+                    
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            
+                        }
+                    });
+                }});
+                
+                add(new JMenuItem("Connect to Network Game...") {{
+                    
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            
+                        }
+                    });
+                }});
+            }});
+            
             add(new JMenu("Options") {{
                 
                 add(new JMenuItem("Options...") {{
@@ -263,11 +286,7 @@ public class GameForm extends JFrame {
 
     //refresh data from model to view
     private void refreshState() {
-        for (int i = 0; i < game.getWidth(); i++) {
-            for (int j = 0; j < game.getHeight(); j++) {
-                board.drawCoin(i, j);
-            }            
-        }
+        board.refreshCoins();
         changeCount(game.getCount(EnumPlayer.FIRST), game.getCount(EnumPlayer.SECOND));
     }
 }

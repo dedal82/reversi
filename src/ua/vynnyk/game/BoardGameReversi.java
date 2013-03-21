@@ -9,11 +9,14 @@ package ua.vynnyk.game;
  * @author vynnyk
  */
 public class BoardGameReversi extends AbstractBoardGame {
-    static final int NONE = 0;
-    static final int LEFT = -1;
-    static final int RIGHT = 1;
-    static final int UP = -1;
-    static final int DOWN = 1;
+    
+    private static final long serialVersionUID = 1L;
+    
+    private static final int NONE = 0;
+    private static final int LEFT = -1;
+    private static final int RIGHT = 1;
+    private static final int UP = -1;
+    private static final int DOWN = 1;
                     
     /**
      *
@@ -39,14 +42,21 @@ public class BoardGameReversi extends AbstractBoardGame {
         EmptyBoard();
         int width = getWidth();
         int height = getHeight();                          
-        putCoin(width / 2 - 1, height / 2 - 1, EnumPlayer.FIRST);
-        putCoin(width / 2, height / 2 - 1, EnumPlayer.SECOND);
-        putCoin(width / 2, height / 2, EnumPlayer.FIRST);
-        putCoin(width / 2 - 1, height / 2, EnumPlayer.SECOND);
+        putCoin(new GameCell(width / 2 - 1, height / 2 - 1), EnumPlayer.FIRST);
+        putCoin(new GameCell(width / 2, height / 2 - 1), EnumPlayer.SECOND);
+        putCoin(new GameCell(width / 2, height / 2), EnumPlayer.FIRST);
+        putCoin(new GameCell(width / 2 - 1, height / 2), EnumPlayer.SECOND);
         fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
     }
         
-    private void putCoin (int x, int y, EnumPlayer player) {        
+    private void putCoin (GameCell cell, EnumPlayer player) { 
+        final int x = cell.getX();
+        final int y = cell.getY();        
+        setPlayer(cell, player);
+        firePutCoinEvent(new PutCoinEvent(this, x, y, player));                                
+    }
+    
+    private void putCoin (int x, int y, EnumPlayer player) {             
         setPlayer(x, y, player);
         firePutCoinEvent(new PutCoinEvent(this, x, y, player));                                
     }
@@ -58,8 +68,10 @@ public class BoardGameReversi extends AbstractBoardGame {
      * @return - true, якщо хід правильний
      */
     @Override
-    public boolean doMove(int x, int y) {
-        if (isInBoard(x, y) && getPlayer(x, y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
+    public boolean doMove(GameCell cell) {
+        final int x = cell.getX();
+        final int y = cell.getY();
+        if (isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
             putCoin(x, y, getActivePlayer());
             reversCoins(x, y, true);
             if (isChangeble()) {
@@ -85,7 +97,7 @@ public class BoardGameReversi extends AbstractBoardGame {
                reversDirection(x, y, LEFT, DOWN, revers);   // лівий низ   
     }
     
-    private int reversDirection(int x, int y,int dX, int dY, boolean revers) {       
+    private int reversDirection(int x, int y,int dX, int dY, boolean revers) {               
         boolean needRevers = false;
         int countRevers = 0;
         int i = x + dX;
@@ -154,6 +166,15 @@ public class BoardGameReversi extends AbstractBoardGame {
             return EnumPlayer.NONE;
         }
     }
-    
-    
+
+    @Override
+    public void UndoMove() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public GameCell getBestMove() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+      
 }
