@@ -88,9 +88,21 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     public EnumPlayer getActivePlayer() {
         return activePlayer;
     }
+    
+    void setActivePlayer(EnumPlayer player) {
+        this.activePlayer = player;
+    }
+    
+    void setActivePlayer() {
+        activePlayer = getNextPlayer();
+    }
 
     EnumPlayer getNextPlayer() {
         return activePlayer == EnumPlayer.FIRST ? EnumPlayer.SECOND : EnumPlayer.FIRST;       
+    }
+    
+    EnumPlayer getNextPlayer(EnumPlayer player) {
+        return player == EnumPlayer.FIRST ? EnumPlayer.SECOND : EnumPlayer.FIRST;       
     }
     
     @Override
@@ -101,11 +113,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     private void setCount(EnumPlayer player, int count) {
         score.put(player, count);
     }
-                        
-    void changePlayer() {
-        activePlayer = getNextPlayer();
-    }
-        
+                                    
     @Override
     public int getWidth() {
         return cellsX;

@@ -48,14 +48,14 @@ public class OptionsForm extends JDialog {
 
     private void initComponents() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);        
-        setTitle("Налаштування");  
+        setTitle("Options");  
         setPreferredSize(new Dimension(400, 400));
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
         
         //Графіка        
         JPanel colorPanel = new JPanel(new MigLayout("fillx, wrap 2", "[align right]10[max]", ""));
-        colorPanel.setBorder(BorderFactory.createTitledBorder("Колір"));
+        colorPanel.setBorder(BorderFactory.createTitledBorder("Colors"));
         
         MouseListener colorLabelListener = new MouseAdapter() {
             @Override
@@ -63,7 +63,7 @@ public class OptionsForm extends JDialog {
                 final JComponent colorComponent = (JComponent) e.getSource();
                 Color newColor = ColorChooser.showDialog(
                                      OptionsForm.this, 
-                                     "Виберіть колір", 
+                                     "Choose Color", 
                                      colorComponent.getBackground());            
                 if (newColor != null) {
                     colorComponent.setBackground(newColor);
@@ -71,16 +71,16 @@ public class OptionsForm extends JDialog {
             }            
         };
         
-        JLabel boardColorLabel = new JLabel("Клітинки");
+        JLabel boardColorLabel = new JLabel("Cells");
         boardColor = createColorLabel(gameForm.getBoardColor(), colorLabelListener);
         
-        JLabel lineColorLabel = new JLabel("Лінії");
+        JLabel lineColorLabel = new JLabel("Lines");
         lineColor = createColorLabel(gameForm.getLineColor(), colorLabelListener);
         
-        JLabel firstColorLabel = new JLabel("Перший гравець");
+        JLabel firstColorLabel = new JLabel("First Player");
         firstColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.FIRST), colorLabelListener);
         
-        JLabel secondColorLabel = new JLabel("Другий гравець");
+        JLabel secondColorLabel = new JLabel("Second Player");
         secondColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.SECOND), colorLabelListener);
         
         colorPanel.add(boardColorLabel);
@@ -95,13 +95,13 @@ public class OptionsForm extends JDialog {
         colorPanel.add(secondColorLabel);
         colorPanel.add(secondColor, "grow");
         
-        tabbedPane.add("Вигляд", colorPanel);
+        tabbedPane.add("Graphic", colorPanel);
         //Графіка        
                 
         JPanel buttonPanel = new JPanel();
                     
-        buttonApply = new JButton("Застосувати");
-        buttonCancel = new JButton("Відмінити");
+        buttonApply = new JButton("Apply");
+        buttonCancel = new JButton("Cancel");
         
         buttonPanel.add(buttonApply);
         buttonPanel.add(buttonCancel);

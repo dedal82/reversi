@@ -4,6 +4,10 @@
  */
 package ua.vynnyk.game;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author vynnyk
@@ -17,6 +21,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     private static final int RIGHT = 1;
     private static final int UP = -1;
     private static final int DOWN = 1;
+    
+    // List of moves to undo. First element is move to undo and other elements are cells to undo revers
+    private List<GameCell> undoList = new LinkedList<>();    
                     
     /**
      *
@@ -50,14 +57,11 @@ public class BoardGameReversi extends AbstractBoardGame {
     }
         
     private void putCoin (GameCell cell, EnumPlayer player) { 
-        final int x = cell.getX();
-        final int y = cell.getY();        
-        setPlayer(cell, player);
-        firePutCoinEvent(new PutCoinEvent(this, x, y, player));                                
+        putCoin(cell.getX(), cell.getY(), player);
     }
     
     private void putCoin (int x, int y, EnumPlayer player) {             
-        setPlayer(x, y, player);
+        setPlayer(x, y, player);                
         firePutCoinEvent(new PutCoinEvent(this, x, y, player));                                
     }
     
@@ -72,10 +76,12 @@ public class BoardGameReversi extends AbstractBoardGame {
         final int x = cell.getX();
         final int y = cell.getY();
         if (isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
+            undoList.clear();
+            undoList.add(new GameCell(x, y));
             putCoin(x, y, getActivePlayer());
             reversCoins(x, y, true);
             if (isChangeble()) {
-                changePlayer();                
+                setActivePlayer();                
             }    
             fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
             if (isGameOver()) {
@@ -119,7 +125,10 @@ public class BoardGameReversi extends AbstractBoardGame {
         }
         if (revers && needRevers) {
             for (int k = 1; k <= countRevers; k++) {
-                putCoin(x + dX * k, y + dY * k, getActivePlayer());
+                final int xx = x + dX * k;
+                final int yy = y + dY * k;
+                undoList.add(new GameCell(xx, yy));
+                putCoin(xx, yy, getActivePlayer());
             }
         }
         return countRevers;
@@ -167,9 +176,20 @@ public class BoardGameReversi extends AbstractBoardGame {
         }
     }
 
+    // undo last one move
     @Override
     public void UndoMove() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (undoList.size() > 0) {            
+            putCoin(undoList.remove(0), EnumPlayer.NONE);
+            final EnumPlayer player = getPlayer(undoList.get(0));
+            final EnumPlayer undoPlayer = getNextPlayer(player);
+            for (GameCell gameCell : undoList) {
+                putCoin(gameCell, undoPlayer);                
+            }
+            undoList.clear();
+            setActivePlayer(player);
+            fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
+        }
     }
 
     @Override

@@ -11,6 +11,9 @@ import java.io.Serializable;
  * @author vynnyk
  */
 public class GameCell implements Serializable {
+    
+    private static final long serialVersionUID = 1L; 
+    
     private int x;
     private int y;
 

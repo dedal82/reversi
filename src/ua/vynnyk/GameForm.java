@@ -64,15 +64,6 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(new JMenuItem("Undo Move") {{
-                    addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            //NOT IMPLEMENTED YET
-                        }
-                    });
-                }});
-                
                 add(new JMenuItem("Show The Best Move") {{
                     addActionListener(new ActionListener() {
                         @Override
@@ -82,6 +73,15 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
+                add(new JMenuItem("Undo Last Move") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            game.UndoMove();
+                        }
+                    });
+                }});
+                                
                 addSeparator();
                 
                 add(new JMenuItem("Save Game...") {{
