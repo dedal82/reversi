@@ -141,8 +141,8 @@ public class GameBoard extends JPanel {
     }
 
     public void refreshCoins() {
-        for (int i = 0; i < getWidth(); i++) {
-            for (int j = 0; j < getHeight(); j++) {
+        for (int i = 0; i < cellsX; i++) {
+            for (int j = 0; j < cellsY; j++) {
                 drawCoin(i, j);
             }            
         }

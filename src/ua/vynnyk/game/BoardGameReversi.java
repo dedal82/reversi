@@ -4,7 +4,6 @@
  */
 package ua.vynnyk.game;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -178,11 +177,11 @@ public class BoardGameReversi extends AbstractBoardGame {
 
     // undo last one move
     @Override
-    public void UndoMove() {
+    public void UndoMove() {        
         if (undoList.size() > 0) {            
-            putCoin(undoList.remove(0), EnumPlayer.NONE);
             final EnumPlayer player = getPlayer(undoList.get(0));
             final EnumPlayer undoPlayer = getNextPlayer(player);
+            putCoin(undoList.remove(0), EnumPlayer.NONE);            
             for (GameCell gameCell : undoList) {
                 putCoin(gameCell, undoPlayer);                
             }

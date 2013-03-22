@@ -59,7 +59,8 @@ public class GameForm extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             board.clear();
-                            game.newGame();                            
+                            game.newGame();
+                            board.validate();
                         }
                     });
                 }});
