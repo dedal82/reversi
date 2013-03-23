@@ -20,15 +20,24 @@ public class BoardGameReversi extends AbstractBoardGame {
     private static final int RIGHT = 1;
     private static final int UP = -1;
     private static final int DOWN = 1;
+    private static final int LEVEL_0 = 0;
+    private static final int LEVEL_1 = 1;    
+    private static final int LEVEL_2 = 2;
+    private static final String OPTION_PLAYERS = "OPTION_PLAYERS";
+    private static final String PLAYER_VS_PLAYER = "PL_VS_PL";
+    private static final String PLAYER_VS_AI = "PL_VS_AI";
+    private static final String AI_VS_AI = "AI_VS_AI";
+    private static final String OPTION_RESULT_MOVE = "OPTION_RESULT_MOVE";
     
     // List of moves to undo. First element is move to undo and other elements are cells to undo revers
-    private List<GameCell> undoList = new LinkedList<>();    
-                    
+    private List<GameCell> undoList;   
+                  
     /**
      *
      */
     public BoardGameReversi() {
-        super();        
+        super();
+        init();
     }
     
     /**
@@ -38,16 +47,24 @@ public class BoardGameReversi extends AbstractBoardGame {
      */
     public BoardGameReversi(int x, int y) {        
         super(x, y);
+        init();
     }
     
+    private void init() {
+        undoList = new LinkedList<>();
+        setOption(OPTION_RESULT_MOVE, true);
+        setOption(OPTION_PLAYERS, PLAYER_VS_PLAYER);
+    }
+            
     /**
      * розпочинає нову гру
      */
+    
     @Override
     public void newGame() {
         EmptyBoard();
-        int width = getWidth();
-        int height = getHeight();                          
+        final int width = getWidth();
+        final int height = getHeight();                          
         putCoin(new GameCell(width / 2 - 1, height / 2 - 1), EnumPlayer.FIRST);
         putCoin(new GameCell(width / 2, height / 2 - 1), EnumPlayer.SECOND);
         putCoin(new GameCell(width / 2, height / 2), EnumPlayer.FIRST);
@@ -65,21 +82,20 @@ public class BoardGameReversi extends AbstractBoardGame {
     }
     
     /**
-     * пробує зробити хід в задані координати
-     * @param x - координата клітинки по-горизонталі
-     * @param y - координата клітинки по-вертикалі
-     * @return - true, якщо хід правильний
+     * try do move into cell     
+     * @return - true, if move correct
      */
     @Override
     public boolean doMove(GameCell cell) {
         final int x = cell.getX();
         final int y = cell.getY();
-        if (isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer())) { 
+        final EnumPlayer player = getActivePlayer();
+        if (isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isCorrect(x, y, player)) { 
             undoList.clear();
-            undoList.add(new GameCell(x, y));
-            putCoin(x, y, getActivePlayer());
-            reversCoins(x, y, true);
-            if (isChangeble()) {
+            undoList.add(cell);
+            putCoin(x, y, player);
+            reversCoins(x, y, player, true);
+            if (isChangeble(getNextPlayer())) {
                 setActivePlayer();                
             }    
             fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
@@ -91,53 +107,61 @@ public class BoardGameReversi extends AbstractBoardGame {
         return false; 
     }           
     
-    private int reversCoins(int x, int y, boolean revers) {
-        return reversDirection(x, y, NONE, UP, revers) +    //вверх
-               reversDirection(x, y, NONE, DOWN, revers) +  //вниз
-               reversDirection(x, y, LEFT, NONE, revers) +  // вліво
-               reversDirection(x, y, RIGHT, NONE, revers) + //  вправо
-               reversDirection(x, y, LEFT, UP, revers) +    // лівий верх
-               reversDirection(x, y, RIGHT, UP, revers) +   // правий верх
-               reversDirection(x, y, RIGHT, DOWN, revers) + // правий низ
-               reversDirection(x, y, LEFT, DOWN, revers);   // лівий низ   
+    private int reversCoins(int x, int y, EnumPlayer player, boolean revers) {
+        return reversDirection(x, y, NONE, UP, player, revers) +    //вверх
+               reversDirection(x, y, NONE, DOWN, player, revers) +  //вниз
+               reversDirection(x, y, LEFT, NONE, player, revers) +  // вліво
+               reversDirection(x, y, RIGHT, NONE, player, revers) + //  вправо
+               reversDirection(x, y, LEFT, UP, player, revers) +    // лівий верх
+               reversDirection(x, y, RIGHT, UP, player, revers) +   // правий верх
+               reversDirection(x, y, RIGHT, DOWN, player, revers) + // правий низ
+               reversDirection(x, y, LEFT, DOWN, player, revers);   // лівий низ   
     }
     
-    private int reversDirection(int x, int y,int dX, int dY, boolean revers) {               
+    private int reversDirection(int x, int y,int dX, int dY, EnumPlayer player,  boolean revers) {                       
+        final int width = getWidth();
+        final int height = getHeight();
+        final EnumPlayer nextPlayer = getNextPlayer(player);
         boolean needRevers = false;
         int countRevers = 0;
         int i = x + dX;
         int j = y + dY;
-        while (i >= 0 && j>=0 && i < getWidth() && j < getHeight()) {
-            if (getPlayer(i, j) == getNextPlayer()) {
+        while (i >= 0 && j>= 0 && i < width && j < height) {
+            final EnumPlayer tmp_player = getPlayer(i, j);
+            if (tmp_player == nextPlayer) {
                 ++countRevers;
-            } else if (getPlayer(i, j) == getActivePlayer()) {
+            } else if (tmp_player == player) {
                 if (countRevers > 0) {
-                    needRevers = true;
-                    break;
+                    needRevers = true;                    
                 }                
-            } else if (getPlayer(i, j) == EnumPlayer.NONE) {
-                countRevers = 0;
+                break;
+            } else if (tmp_player == EnumPlayer.NONE) {                
                 break;
             }
             i = i + dX;
             j = j + dY;
         }
-        if (revers && needRevers) {
-            for (int k = 1; k <= countRevers; k++) {
-                final int xx = x + dX * k;
-                final int yy = y + dY * k;
-                undoList.add(new GameCell(xx, yy));
-                putCoin(xx, yy, getActivePlayer());
+        
+        if (needRevers) {
+            if (revers) {
+                for (int k = 1; k <= countRevers; k++) {
+                    final int xx = x + dX * k;
+                    final int yy = y + dY * k;
+                    undoList.add(new GameCell(xx, yy));
+                    putCoin(xx, yy, player);                    
+                }    
             }
-        }
+        } else {
+            countRevers = 0;
+        }        
         return countRevers;
     }
     
-    // визначає чи можна передати хід іншому гравцеві
-    private boolean isChangeble() {
+    // return true if next player can do move
+    private boolean isChangeble(EnumPlayer player) {
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {
-                if (getPlayer(i, j) == EnumPlayer.NONE && isNear(i, j, getActivePlayer())) {
+                if (getPlayer(i, j) == EnumPlayer.NONE && isCorrect(i, j, player)) {
                     return true;
                 }
             }
@@ -145,24 +169,33 @@ public class BoardGameReversi extends AbstractBoardGame {
         }
         return false;
     }    
-    // виначає чи є по-сусідству потрібна фішка
-    private boolean isNear(int x, int y, EnumPlayer nearPl) {
+    
+    //return true when near is other player and OPTION_RESULT_MOVE is diseble or move will revers one or more coins
+    private boolean isCorrect(int x, int y, EnumPlayer player) {
+        return isNear(x, y, getNextPlayer(player)) && 
+               (getOption(OPTION_RESULT_MOVE) == false || reversCoins(x, y, player, false) > 0);                    
+    }
+    
+    // detecting other player in nearest game cells
+    private boolean isNear(int x, int y, EnumPlayer nearPlayer) {
         final int w = getWidth();
         final int h = getHeight();        
-        return (y > 0 && getPlayer(x, y - 1) == nearPl) || 
-               (y < h - 1 && getPlayer(x, y + 1) == nearPl) ||
-               (x > 0 && getPlayer(x - 1, y) == nearPl) ||
-               (x < w - 1 && getPlayer(x + 1, y) == nearPl) ||
-               (x > 0 && y > 0 && getPlayer(x - 1, y - 1) == nearPl) ||
-               (x < w - 1 && y > 0 && getPlayer(x + 1, y - 1) == nearPl) ||
-               (x < w - 1 && y < h - 1 && getPlayer(x + 1, y + 1) == nearPl) ||
-               (x > 0 && y < h - 1 && getPlayer(x - 1 , y + 1) == nearPl);
+        return (y > 0 && getPlayer(x, y - 1) == nearPlayer) || 
+               (y < h - 1 && getPlayer(x, y + 1) == nearPlayer) ||
+               (x > 0 && getPlayer(x - 1, y) == nearPlayer) ||
+               (x < w - 1 && getPlayer(x + 1, y) == nearPlayer) ||
+               (x > 0 && y > 0 && getPlayer(x - 1, y - 1) == nearPlayer) ||
+               (x < w - 1 && y > 0 && getPlayer(x + 1, y - 1) == nearPlayer) ||
+               (x < w - 1 && y < h - 1 && getPlayer(x + 1, y + 1) == nearPlayer) ||
+               (x > 0 && y < h - 1 && getPlayer(x - 1 , y + 1) == nearPlayer);
     }       
     
+    // return true if game end 
     private boolean isGameOver() {
         return getCount(EnumPlayer.NONE) == 0;                
     }
 
+    //return winner 
     private EnumPlayer getWinner() {
         final int first = getCount(EnumPlayer.FIRST);
         final int second = getCount(EnumPlayer.SECOND);
@@ -193,7 +226,10 @@ public class BoardGameReversi extends AbstractBoardGame {
 
     @Override
     public GameCell getBestMove() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getAIMove(LEVEL_0);
     }
-      
+    
+    private GameCell getAIMove(int level) {
+        return null;        
+    }          
 }
