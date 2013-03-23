@@ -25,9 +25,9 @@ public class AboutForm extends JDialog implements ActionListener {
 
     private void initComponents() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);        
-        setTitle("Про Реверсі");        
+        setTitle("About Reversi");        
         setLayout(new MigLayout());
-        add(new JLabel("Реверсі v.1a"), "wrap, align center");
+        add(new JLabel("Reversi v.1a"), "wrap, align center");
         add(new JLabel("Copiright Andrii Vynnyk"), "wrap, align center");
         add(new JLabel("2013"), "wrap, align center");
         JButton button = new JButton("Ок");

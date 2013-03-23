@@ -192,7 +192,8 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     // return true if game end 
     private boolean isGameOver() {
-        return getCount(EnumPlayer.NONE) == 0;                
+        return getCount(EnumPlayer.NONE) == 0 || 
+               (!isChangeble(EnumPlayer.FIRST) && !isChangeble(EnumPlayer.SECOND));                
     }
 
     //return winner 
