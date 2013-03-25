@@ -45,7 +45,9 @@ public class GameControler implements BoardGameControlerInterface {
         } else if (status == PL_VS_AI) {
             if (game.getActivePlayer() == EnumPlayer.FIRST) { 
                 if (game.doMove(cell)) {
-                    doAIMoveThread();
+                    if (game.getActivePlayer() == EnumPlayer.SECOND) {
+                        doAIMoveThread();
+                    }
                     return true;
                 } 
             }    
@@ -97,9 +99,12 @@ public class GameControler implements BoardGameControlerInterface {
                     Logger.getLogger(GameControler.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 game.doAIMove();
+                if (game.getActivePlayer() == EnumPlayer.SECOND) {
+                    doAIMoveThread();
+                }
             }
         });
-        t.start();
+        t.start();        
     }
     
 }

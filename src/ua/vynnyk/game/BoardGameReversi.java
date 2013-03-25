@@ -237,7 +237,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     @Override
     public GameCell doAIMove() {
         GameCell cell = getAIMove((int) getOption(OPTION_AI_LEVEL));
-        doMove(cell);
+        doCorrectMove(cell);
         return cell;
     }
         
