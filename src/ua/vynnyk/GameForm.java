@@ -25,7 +25,6 @@ import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
 import ua.vynnyk.components.CountBoard;
 import ua.vynnyk.controler.BoardGameControlerInterface;
-import ua.vynnyk.controler.GameControler;
 import ua.vynnyk.game.*;
 import ua.vynnyk.layout.SquareLayout;
 
@@ -35,14 +34,16 @@ import ua.vynnyk.layout.SquareLayout;
  */
 public class GameForm extends JFrame {
     private BoardGameInterface game;
+    private BoardGameControlerInterface controler;
     private GameBoard board;
     private JPanel panel;
     private CountBoard countBoard;
     private JMenuBar menuBar; 
     private JPanel panelActivePlayer;
 
-    public GameForm(BoardGameInterface game) {
+    public GameForm(BoardGameInterface game, BoardGameControlerInterface controler) {
         this.game = game;
+        this.controler = controler;
         setTitle("Reversi");
         initComponents();        
     }    
@@ -60,9 +61,7 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            board.clear();
-                            game.newGame();
-                            board.validate();
+                            controler.newGame();
                         }
                     });
                 }});
@@ -124,7 +123,7 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            
+                            controler.newGame();
                         }
                     });
                 }});
@@ -174,8 +173,8 @@ public class GameForm extends JFrame {
         board.setPoolCoin(EnumPlayer.FIRST, new SimpleCoinPool());
         board.setPoolCoin(EnumPlayer.SECOND, new SimpleCoinPool(Color.RED));
         board.setGame(game);
-        board.setControler(new GameControler(game));
-                
+        board.setControler(controler);
+        controler.setBoard(board);
         add(SquareLayout.createSquareContainer(board), BorderLayout.CENTER);        
         
         countBoard = new CountBoard(board.getCoinColor(EnumPlayer.FIRST),

@@ -4,6 +4,8 @@
  */
 package ua.vynnyk.controler;
 
+import ua.vynnyk.board.GameBoard;
+import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.GameCell;
 
 /**
@@ -20,7 +22,12 @@ public interface BoardGameControlerInterface {
     public static final int AI_VS_AI = 2;
     public static final int PL_VS_PL_NET = 3;
     
+    public void newGame();
     public boolean doMove(GameCell cell);
+    public void setGame(BoardGameInterface game);
+    public BoardGameInterface getGame();
+    public void setBoard(GameBoard board);
+    public GameBoard getBoard();
     public void setStatus(int i);
     public int getStatus();
 }
