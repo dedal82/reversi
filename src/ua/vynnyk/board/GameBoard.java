@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.game.GameCell;
@@ -34,6 +35,7 @@ public class GameBoard extends JPanel {
     private Map<EnumPlayer, CoinPoolInterface> coins = new EnumMap(EnumPlayer.class);    
     private Cell[][] cells;
     private BoardGameInterface game;
+    private BoardGameControlerInterface controler;
 
     public GameBoard() {        
         initComponents();
@@ -52,7 +54,15 @@ public class GameBoard extends JPanel {
     public void setGame(BoardGameInterface game) {
         this.game = game;
     }
-    
+
+    public BoardGameControlerInterface getControler() {
+        return controler;
+    }
+
+    public void setControler(BoardGameControlerInterface controler) {
+        this.controler = controler;
+    }
+            
     public void setPoolCoin(EnumPlayer player, CoinPoolInterface coin) {
         coins.put(player, coin);
     }   
@@ -81,8 +91,7 @@ public class GameBoard extends JPanel {
         MouseAdapter listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                final Cell cell = (Cell) e.getSource();
-                game.doMove(new GameCell(cell.getCellX(), cell.getCellY()));
+                actionCellClicked((Cell) e.getSource());                                                
             }             
         };        
         for (int y = 0; y < cellsY; y++) {
@@ -90,6 +99,10 @@ public class GameBoard extends JPanel {
                 addCell(x, y, border, listener);
             }            
         }                 
+    }
+        
+    private void actionCellClicked(Cell cell) {
+        controler.doMove(new GameCell(cell.getCellX(), cell.getCellY()));
     }
 
     public void clear() {

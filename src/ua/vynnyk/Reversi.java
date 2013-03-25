@@ -17,7 +17,7 @@ public class Reversi {
      * @param args the command line arguments
      */
     public static void main(String[] args) {         
-        final BoardGameInterface game = new BoardGameReversi();
+        final BoardGameInterface game = new BoardGameReversi();        
         setLookAndFeel();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

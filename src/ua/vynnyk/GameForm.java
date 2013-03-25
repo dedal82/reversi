@@ -24,6 +24,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
 import ua.vynnyk.components.CountBoard;
+import ua.vynnyk.controler.BoardGameControlerInterface;
+import ua.vynnyk.controler.GameControler;
 import ua.vynnyk.game.*;
 import ua.vynnyk.layout.SquareLayout;
 
@@ -172,6 +174,7 @@ public class GameForm extends JFrame {
         board.setPoolCoin(EnumPlayer.FIRST, new SimpleCoinPool());
         board.setPoolCoin(EnumPlayer.SECOND, new SimpleCoinPool(Color.RED));
         board.setGame(game);
+        board.setControler(new GameControler(game));
                 
         add(SquareLayout.createSquareContainer(board), BorderLayout.CENTER);        
         
