@@ -4,7 +4,6 @@
  */
 package ua.vynnyk.board;
 
-import java.awt.Graphics;
 import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
@@ -29,12 +28,10 @@ public class Cell extends JPanel {
     public int getCellY() {
         return cellY;
     }  
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawString(cellX +"," +cellY, 0, 10);
-    }
-    
-    
+      /* for testing only*/ 
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//        g.drawString(cellX +"," +cellY, 0, 10);
+//    }        
 }
