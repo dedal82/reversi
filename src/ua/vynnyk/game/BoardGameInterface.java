@@ -8,7 +8,7 @@ package ua.vynnyk.game;
  *
  * @author dedal
  */
-public interface BoardGameInterface {
+public interface BoardGameInterface {    
     public EnumPlayer getActivePlayer();
     public int getCount(EnumPlayer player);
     public void newGame();
@@ -16,6 +16,7 @@ public interface BoardGameInterface {
     public EnumPlayer getPlayer(GameCell cell);
     public void UndoMove();
     public GameCell getBestMove();
+    public GameCell doAIMove();
     public int getWidth();
     public int getHeight();
     public void setOption(String option, Object value);

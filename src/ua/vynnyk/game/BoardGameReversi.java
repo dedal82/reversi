@@ -4,6 +4,7 @@
  */
 package ua.vynnyk.game;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,8 +14,7 @@ import java.util.List;
  */
 public class BoardGameReversi extends AbstractBoardGame {
     
-    private static final long serialVersionUID = 1L;
-    
+    private static final long serialVersionUID = 1L;    
     private static final int NONE = 0;
     private static final int LEFT = -1;
     private static final int RIGHT = 1;
@@ -22,12 +22,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     private static final int DOWN = 1;
     private static final int LEVEL_0 = 0;
     private static final int LEVEL_1 = 1;    
-    private static final int LEVEL_2 = 2;
-    private static final String OPTION_PLAYERS = "OPTION_PLAYERS";
-    private static final String PLAYER_VS_PLAYER = "PL_VS_PL";
-    private static final String PLAYER_VS_AI = "PL_VS_AI";
-    private static final String AI_VS_AI = "AI_VS_AI";
+    private static final int LEVEL_2 = 2;    
     private static final String OPTION_RESULT_MOVE = "OPTION_RESULT_MOVE";
+    private static final String OPTION_AI_LEVEL = "OPTION_AI_LEVEL";
     
     // List of moves to undo. First element is move to undo and other elements are cells to undo revers
     private List<GameCell> undoList;   
@@ -52,8 +49,8 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     private void init() {
         undoList = new LinkedList<>();
-        setOption(OPTION_RESULT_MOVE, true);
-        setOption(OPTION_PLAYERS, PLAYER_VS_PLAYER);
+        setOption(OPTION_RESULT_MOVE, true);        
+        setOption(OPTION_AI_LEVEL, LEVEL_0);
     }
             
     /**
@@ -69,7 +66,7 @@ public class BoardGameReversi extends AbstractBoardGame {
         putCoin(new GameCell(width / 2, height / 2 - 1), EnumPlayer.SECOND);
         putCoin(new GameCell(width / 2, height / 2), EnumPlayer.FIRST);
         putCoin(new GameCell(width / 2 - 1, height / 2), EnumPlayer.SECOND);
-        fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
+        fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));                 
     }
         
     private void putCoin (GameCell cell, EnumPlayer player) { 
@@ -87,25 +84,30 @@ public class BoardGameReversi extends AbstractBoardGame {
      */
     @Override
     public boolean doMove(GameCell cell) {
-        final int x = cell.getX();
-        final int y = cell.getY();
-        final EnumPlayer player = getActivePlayer();
-        if (isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isCorrect(x, y, player)) { 
-            undoList.clear();
-            undoList.add(cell);
-            putCoin(x, y, player);
-            reversCoins(x, y, player, true);
-            if (isChangeble(getNextPlayer())) {
-                setActivePlayer();                
-            }    
-            fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
-            if (isGameOver()) {
-                fireGameOverEvent(new GameOverEvent(this, getWinner()));
-            }                    
+        if (isCorrect(cell.getX(), cell.getY(), getActivePlayer())) { 
+            doCorrectMove(cell);
             return true; 
         } 
         return false; 
-    }           
+    }   
+    
+    private void doCorrectMove(GameCell cell) {
+        final EnumPlayer player = getActivePlayer();
+        final int x = cell.getX();
+        final int y = cell.getY();        
+        undoList.clear();
+        undoList.add(cell);
+        putCoin(x, y, player);
+        reversCoins(x, y, player, true);
+        boolean gameOver = isGameOver();
+        if (!gameOver && isChangeble(getNextPlayer())) {
+            setActivePlayer();                  
+        }
+        fireChangeCountEvent(new ChangeCountEvent(this, getCount(EnumPlayer.FIRST), getCount(EnumPlayer.SECOND)));
+        if (gameOver) {
+            fireGameOverEvent(new GameOverEvent(this, getWinner()));
+        }
+    }
     
     private int reversCoins(int x, int y, EnumPlayer player, boolean revers) {
         return reversDirection(x, y, NONE, UP, player, revers) +    //вверх
@@ -172,7 +174,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     //return true when near is other player and OPTION_RESULT_MOVE is diseble or move will revers one or more coins
     private boolean isCorrect(int x, int y, EnumPlayer player) {
-        return isNear(x, y, getNextPlayer(player)) && 
+        return isInBoard(x, y) && isNear(x, y, getNextPlayer(player)) && getPlayer(x , y) == EnumPlayer.NONE &&
                (getOption(OPTION_RESULT_MOVE) == false || reversCoins(x, y, player, false) > 0);                    
     }
     
@@ -230,7 +232,34 @@ public class BoardGameReversi extends AbstractBoardGame {
         return getAIMove(LEVEL_0);
     }
     
+    // implemented only 0-level AI, without strategy, with max result move. Just for testing
+
+    @Override
+    public GameCell doAIMove() {
+        GameCell cell = getAIMove((int) getOption(OPTION_AI_LEVEL));
+        doMove(cell);
+        return cell;
+    }
+        
     private GameCell getAIMove(int level) {
-        return null;        
+        List<GameCell> moves = new ArrayList<>();
+        final EnumPlayer activePlayer = getActivePlayer();
+        int maxCountReversed = 0;
+        int countReversed;
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {                
+                if (isCorrect(i, j, activePlayer)) {
+                    countReversed = reversCoins(i, j, activePlayer ,false);
+                    if (countReversed >= maxCountReversed) {
+                        if (countReversed > maxCountReversed) {
+                            maxCountReversed = countReversed;
+                            moves.clear();
+                        }
+                        moves.add(new GameCell(i, j));
+                    }                      
+                }
+            }
+        }
+        return moves.get((int) Math.random() * (moves.size() - 1));        
     }          
 }
