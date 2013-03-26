@@ -20,6 +20,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.board.*;
@@ -79,7 +80,7 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            game.UndoMove();
+                            controler.undoMove();
                         }
                     });
                 }});
@@ -207,7 +208,7 @@ public class GameForm extends JFrame {
         });
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
-            public void ChangeCount(ChangeCountEvent e) {
+            public void ChangeCount(ChangeCountEvent e) {                
                 changeCount(e.getFirst(), e.getSecond());
             }
         });
@@ -224,7 +225,12 @@ public class GameForm extends JFrame {
                 } else {
                     winmsg = "Drawn game!";
                 } 
-                JOptionPane.showMessageDialog(frame, winmsg, "Game over", JOptionPane.INFORMATION_MESSAGE);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(frame, winmsg, "Game over", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });                
             }
         });                
     }
@@ -284,7 +290,8 @@ public class GameForm extends JFrame {
         countBoard.setCount(first, second);
         panelActivePlayer.removeAll();
         panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
-        panelActivePlayer.repaint();
+        panelActivePlayer.validate();
+        panelActivePlayer.repaint();        
     }
 
     //refresh data from model to view

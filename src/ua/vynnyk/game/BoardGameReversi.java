@@ -260,6 +260,6 @@ public class BoardGameReversi extends AbstractBoardGame {
                 }
             }
         }
-        return moves.get((int) Math.random() * (moves.size() - 1));        
+        return moves.get((int) Math.floor(Math.random() * (moves.size())));                
     }          
 }
