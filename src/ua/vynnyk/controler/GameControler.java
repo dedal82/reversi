@@ -18,7 +18,7 @@ import ua.vynnyk.game.GameOverEventListener;
  * @author vynnyk
  */
 public class GameControler implements BoardGameControlerInterface {
-    private static final int AI_TIMEOUT = 3000;
+    private static final int AI_TIMEOUT = 100;
     private int status;
     private BoardGameInterface game;
     private GameBoard board;
@@ -29,8 +29,6 @@ public class GameControler implements BoardGameControlerInterface {
         this.status = 1;
         addListeners();
     }
-    
-    
     
     @Override
     public void newGame() {
