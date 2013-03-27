@@ -160,4 +160,8 @@ public class GameBoard extends JPanel {
             }            
         }
     }
+    
+    public void blinkCell(int x, int y) {
+        cells[x][y].setBackground(Color.WHITE);
+    }
 }

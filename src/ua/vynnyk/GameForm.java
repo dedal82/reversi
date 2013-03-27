@@ -41,6 +41,9 @@ public class GameForm extends JFrame {
     private CountBoard countBoard;
     private JMenuBar menuBar; 
     private JPanel panelActivePlayer;
+    private JMenuItem startAIBattleItem;
+    private JMenuItem stopAIBattleItem;
+    private JMenuItem showBestMoveItem;
 
     public GameForm(BoardGameInterface game, BoardGameControlerInterface controler) {
         this.game = game;
@@ -62,16 +65,20 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
+                            showBestMoveItem.setEnabled(true);
+                            startAIBattleItem.setEnabled(true);
+                            stopAIBattleItem.setEnabled(false);
                             controler.newGame();
                         }
                     });
                 }});
                 
-                add(new JMenuItem("Show The Best Move") {{
+                add(showBestMoveItem = new JMenuItem("Show The Best Move") {{
+                    setEnabled(false);
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            //NOT IMPLEMENTED YET                          
+                            controler.getBestMove();
                         }
                     });
                 }});
@@ -81,6 +88,31 @@ public class GameForm extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             controler.undoMove();
+                        }
+                    });
+                }});
+                
+                addSeparator();
+                                                
+                add(startAIBattleItem = new JMenuItem("Start AI Vs AI Battle") {{
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            setEnabled(false);
+                            stopAIBattleItem.setEnabled(true);
+                            controler.startAIBattle();                            
+                        }
+                    });
+                }});
+                                                
+                add(stopAIBattleItem = new JMenuItem("Stop AI Vs AI Battle") {{
+                    setEnabled(false);                            
+                    addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            setEnabled(false);
+                            startAIBattleItem.setEnabled(true); 
+                            controler.stopAIBattle();                            
                         }
                     });
                 }});
@@ -203,13 +235,25 @@ public class GameForm extends JFrame {
         game.addPutCoinListener(new PutCoinEventListener() {
             @Override
             public void PutCoin(PutCoinEvent e) {
-                board.drawCoin(e.getX(), e.getY());               
+                final PutCoinEvent evt = e;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        board.drawCoin(evt.getX(), evt.getY());               
+                    }
+                });                                 
             }            
         });
         game.addChangeCountListener(new ChangeCountEventListener() {
             @Override
-            public void ChangeCount(ChangeCountEvent e) {                
-                changeCount(e.getFirst(), e.getSecond());
+            public void ChangeCount(ChangeCountEvent e) { 
+                final ChangeCountEvent evt = e;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        changeCount(evt.getFirst(), evt.getSecond());
+                    }
+                });                 
             }
         });
         game.addGameOverListener(new GameOverEventListener() {
@@ -298,5 +342,5 @@ public class GameForm extends JFrame {
     private void refreshState() {
         board.refreshCoins();
         changeCount(game.getCount(EnumPlayer.FIRST), game.getCount(EnumPlayer.SECOND));
-    }
+    }        
 }

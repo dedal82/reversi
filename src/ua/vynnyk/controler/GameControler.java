@@ -18,31 +18,32 @@ import ua.vynnyk.game.GameOverEventListener;
  * @author vynnyk
  */
 public class GameControler implements BoardGameControlerInterface {
-    private static final int AI_TIMEOUT = 100;
-    private int status;
+    private static final int AI_TIMEOUT = 500;
+    private Integer status;
+    private Integer oldStatus;
     private BoardGameInterface game;
     private GameBoard board;
     private boolean gameEnd;
     
     public GameControler(BoardGameInterface game) {
         this.game = game;
-        this.status = 1;
+        this.status = PL_VS_AI;
         addListeners();
     }
     
     @Override
-    public void newGame() {
+    public void newGame() { 
+        if (status == AI_VS_AI) {
+            status = oldStatus;
+        }
         gameEnd = false;
         board.clear();
         game.newGame();
         board.validate();
-        if (status == PL_VS_AI) {
-            synchronized (game) {
-                if (game.getActivePlayer() == EnumPlayer.SECOND) {               
-                    doAIMoveThread();
-                }     
-            }
-        }                     
+                
+        if (status == PL_VS_AI && game.getActivePlayer() == EnumPlayer.SECOND) {
+            doAIMoveThread();                                           
+        } 
     }
     
     private void addListeners() {
@@ -89,6 +90,7 @@ public class GameControler implements BoardGameControlerInterface {
 
     @Override
     public void setStatus(int i) {
+        this.oldStatus = this.status;
         this.status = i;
     }
 
@@ -117,17 +119,20 @@ public class GameControler implements BoardGameControlerInterface {
     public void setBoard(GameBoard board) {
         this.board = board;
     }
-                
+
+    @Override
+    public GameCell getBestMove() {
+        final GameCell cell = game.getBestMove();
+        board.blinkCell(cell.getX(), cell.getY());
+        return cell;
+    }
+            
     private void doAIMoveThread() {        
         if (!gameEnd) {          
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(AI_TIMEOUT);                    
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GameControler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    pause(AI_TIMEOUT);
                     synchronized (game) {
                         if (status == PL_VS_AI && game.getActivePlayer() == EnumPlayer.SECOND) {
                             game.doAIMove();
@@ -142,4 +147,45 @@ public class GameControler implements BoardGameControlerInterface {
             t.start();  
         }
     }            
+    
+    @Override
+    public void startAIBattle() { 
+        newGame();
+        //if AI battle not yet executing, then run thread. 
+        if (status != AI_VS_AI) {
+            oldStatus = status;            
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    setStatus(AI_VS_AI);
+                    while (!gameEnd) {
+                        pause(AI_TIMEOUT);                
+                        synchronized (status) {
+                            if (status == AI_VS_AI) {
+                                game.doAIMove();
+                            } else {
+                                break;
+                            }                    
+                        }
+                    }
+                    status = oldStatus;
+                }
+            });
+            t.start();  
+        }
+    }
+    
+    @Override
+    public void stopAIBattle() {
+        status = oldStatus;
+    }
+    
+    private void pause(int ms) {
+        try {
+            Thread.sleep(ms);                    
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameControler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+   
 }

@@ -25,6 +25,9 @@ public interface BoardGameControlerInterface {
     public void newGame();
     public boolean doMove(GameCell cell);
     public void undoMove();
+    public void startAIBattle();
+    public void stopAIBattle();
+    public GameCell getBestMove();
     public void setGame(BoardGameInterface game);
     public BoardGameInterface getGame();
     public void setBoard(GameBoard board);
