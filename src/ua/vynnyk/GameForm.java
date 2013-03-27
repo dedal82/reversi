@@ -272,6 +272,8 @@ public class GameForm extends JFrame {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
+                        startAIBattleItem.setEnabled(true);
+                        stopAIBattleItem.setEnabled(false);
                         JOptionPane.showMessageDialog(frame, winmsg, "Game over", JOptionPane.INFORMATION_MESSAGE);
                     }
                 });                
