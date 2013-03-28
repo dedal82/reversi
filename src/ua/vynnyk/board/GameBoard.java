@@ -9,12 +9,15 @@ package ua.vynnyk.board;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.BoardGameInterface;
@@ -162,6 +165,28 @@ public class GameBoard extends JPanel {
     }
     
     public void blinkCell(int x, int y) {
-        cells[x][y].setBackground(Color.WHITE);
+        final Cell cell = cells[x][y]; 
+                
+        ActionListener actLs = new ActionListener() {
+            private Timer tm  = new Timer(200, this);
+            private int loop = 10;
+            
+            {
+                tm.start();
+            }            
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                loop--;
+                if (loop % 2 == 0) {
+                    cell.setBackground(cell.getBackground().brighter());
+                } else {
+                    cell.setBackground(boardColor);
+                }
+                if (loop <= 0) {
+                    tm.stop();
+                    cell.setBackground(boardColor);
+                }
+            }
+        };                
     }
 }
