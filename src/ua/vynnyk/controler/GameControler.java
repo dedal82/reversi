@@ -18,12 +18,12 @@ import ua.vynnyk.game.GameOverEventListener;
  * @author vynnyk
  */
 public class GameControler implements BoardGameControlerInterface {
-    private static final int AI_TIMEOUT = 500;
-    private Integer status;
-    private Integer oldStatus;
+    private static final int AI_TIMEOUT = 1000;
     private BoardGameInterface game;
     private GameBoard board;
-    private boolean gameEnd;
+    private Integer oldStatus;
+    private volatile Integer status;
+    private volatile boolean gameEnd;
     
     public GameControler(BoardGameInterface game) {
         this.game = game;
@@ -90,13 +90,28 @@ public class GameControler implements BoardGameControlerInterface {
 
     @Override
     public void setStatus(int i) {
-        this.oldStatus = this.status;
-        this.status = i;
+        synchronized (this) {
+            if (status != AI_VS_AI) {
+                this.oldStatus = this.status;
+                this.status = i;
+            } else {
+                this.oldStatus = i;
+            }
+        }
+        if (status == PL_VS_AI) {
+           doAIMoveThread();
+        }               
     }
 
     @Override
     public int getStatus() {
-        return this.status;
+        synchronized (this) {
+            if (status != AI_VS_AI) {
+                return status;
+            } else {
+                return oldStatus;
+            }
+        }        
     }
 
     @Override

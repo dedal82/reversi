@@ -312,6 +312,22 @@ public class GameForm extends JFrame {
         repaint();
     }
     
+    public int getPlayers() {
+        return controler.getStatus();
+    }
+    
+    public void setPlayers(int players) {
+        controler.setStatus(players);
+    }
+    
+    public int getAILevel() {
+        return (int) game.getOption("OPTION_AI_LEVEL");
+    }
+    
+    public void setAILevel(int level) {
+        game.setOption("OPTION_AI_LEVEL", level);
+    }    
+    
     private void saveGame() {
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
