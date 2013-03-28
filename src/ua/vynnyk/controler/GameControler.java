@@ -137,9 +137,14 @@ public class GameControler implements BoardGameControlerInterface {
 
     @Override
     public GameCell getBestMove() {
-        final GameCell cell = game.getBestMove();
-        board.blinkCell(cell.getX(), cell.getY());
-        return cell;
+        if (!gameEnd) {
+            synchronized (game) {
+                final GameCell cell = game.getBestMove();
+                board.blinkCell(cell.getX(), cell.getY());
+                return cell;
+            }
+        }
+        return null;
     }
             
     private void doAIMoveThread() {        
