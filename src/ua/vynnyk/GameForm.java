@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -34,6 +35,7 @@ import ua.vynnyk.layout.SquareLayout;
  * @author Admin
  */
 public class GameForm extends JFrame {
+    private static final String SAVE_EXTENTION = ".sav";
     private BoardGameInterface game;
     private BoardGameControlerInterface controler;
     private GameBoard board;
@@ -330,15 +332,19 @@ public class GameForm extends JFrame {
     
     private void saveGame() {
         final JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
+        fc.setFileFilter(new FileNameExtensionFilter("Save game file (" + SAVE_EXTENTION + ")", SAVE_EXTENTION));
         if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {       
-            GameUtility.saveGame(game, fc.getSelectedFile());            
+            if (!fc.getSelectedFile().getAbsolutePath().endsWith(SAVE_EXTENTION)) {
+                GameUtility.saveGame(game, new File(fc.getSelectedFile().getAbsolutePath() + SAVE_EXTENTION));
+            } else {
+                GameUtility.saveGame(game, fc.getSelectedFile());
+            }                                  
         }
     }
     
     private void loadGame() {
         final JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("Save game file (.sav)", "sav"));
+        fc.setFileFilter(new FileNameExtensionFilter("Save game file (" + SAVE_EXTENTION + ")", SAVE_EXTENTION));
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {       
             game = GameUtility.loadGame(fc.getSelectedFile());
             board.setGame(game);
