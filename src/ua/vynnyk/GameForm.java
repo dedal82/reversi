@@ -29,6 +29,7 @@ import ua.vynnyk.components.CountBoard;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.*;
 import ua.vynnyk.layout.SquareLayout;
+import ua.vynnyk.translations.TranslateHelper;
 
 /**
  *
@@ -61,9 +62,9 @@ public class GameForm extends JFrame {
         //
         menuBar = new JMenuBar() {{
             
-            add(new JMenu("Game") {{
+            add(new JMenu(TranslateHelper.getString("main.menu.game")) {{
                 
-                add(new JMenuItem("New Game") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.game.newgame")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -75,7 +76,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(showBestMoveItem = new JMenuItem("Show The Best Move") {{
+                add(showBestMoveItem = new JMenuItem(TranslateHelper.getString("main.menu.game.showthebestmove")) {{
                     setEnabled(false);
                     addActionListener(new ActionListener() {
                         @Override
@@ -85,7 +86,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(new JMenuItem("Undo Last Move") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.game.undolastmove")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -96,7 +97,7 @@ public class GameForm extends JFrame {
                 
                 addSeparator();
                                                 
-                add(startAIBattleItem = new JMenuItem("Start AI Vs AI Battle") {{
+                add(startAIBattleItem = new JMenuItem(TranslateHelper.getString("main.menu.game.startaivsaibattle")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -107,7 +108,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                                                 
-                add(stopAIBattleItem = new JMenuItem("Stop AI Vs AI Battle") {{
+                add(stopAIBattleItem = new JMenuItem(TranslateHelper.getString("main.menu.game.stopaivsaibattle")) {{
                     setEnabled(false);                            
                     addActionListener(new ActionListener() {
                         @Override
@@ -121,7 +122,7 @@ public class GameForm extends JFrame {
                                 
                 addSeparator();
                 
-                add(new JMenuItem("Save Game...") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.game.savegame")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -130,7 +131,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(new JMenuItem("Load Game...") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.game.loadgame")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -141,7 +142,7 @@ public class GameForm extends JFrame {
                 
                 addSeparator();
                 
-                add(new JMenuItem("Exit") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.game.exit")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -151,9 +152,9 @@ public class GameForm extends JFrame {
                 }});                
             }});
             
-            add(new JMenu("Network") {{
+            add(new JMenu(TranslateHelper.getString("main.menu.network")) {{
                 
-                add(new JMenuItem("Create Network Game") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.network.createnetworkgame")) {{
                     
                     addActionListener(new ActionListener() {
                         @Override
@@ -163,7 +164,7 @@ public class GameForm extends JFrame {
                     });
                 }});
                 
-                add(new JMenuItem("Connect to Network Game...") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.network.connecttonetworkgame")) {{
                     
                     addActionListener(new ActionListener() {
                         @Override
@@ -174,9 +175,9 @@ public class GameForm extends JFrame {
                 }});
             }});
             
-            add(new JMenu("Options") {{
+            add(new JMenu(TranslateHelper.getString("main.menu.options")) {{
                 
-                add(new JMenuItem("Options...") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.options.options")) {{
                     
                     addActionListener(new ActionListener() {
                         @Override
@@ -187,9 +188,9 @@ public class GameForm extends JFrame {
                 }});
             }});
             
-            add(new JMenu("Help") {{
+            add(new JMenu(TranslateHelper.getString("main.menu.help")) {{
                 
-                add(new JMenuItem("About...") {{
+                add(new JMenuItem(TranslateHelper.getString("main.menu.help.about")) {{
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -223,7 +224,7 @@ public class GameForm extends JFrame {
         panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setLayout(new MigLayout());
         panel.add(countBoard, "wrap 20px");  
-        panel.add(new JLabel("Turn"), "align center, wrap");
+        panel.add(new JLabel(TranslateHelper.getString("main.turn")), "align center, wrap");
         panel.add(panelActivePlayer);       
         add(panel, BorderLayout.EAST);
         addListeners();
@@ -265,18 +266,18 @@ public class GameForm extends JFrame {
                 final String winmsg;
                 final EnumPlayer winner = e.getWinner();
                 if (winner == EnumPlayer.FIRST) {
-                    winmsg = "First player win game!";
+                    winmsg = TranslateHelper.getString("main.firstwin");
                 } else if (winner == EnumPlayer.SECOND) {
-                    winmsg = "Second player win game!";
+                    winmsg = TranslateHelper.getString("main.secondwin");
                 } else {
-                    winmsg = "Drawn game!";
+                    winmsg = TranslateHelper.getString("main.draw");
                 } 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
                         startAIBattleItem.setEnabled(true);
                         stopAIBattleItem.setEnabled(false);
-                        JOptionPane.showMessageDialog(frame, winmsg, "Game over", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, winmsg, TranslateHelper.getString("main.gameover"), JOptionPane.INFORMATION_MESSAGE);
                     }
                 });                
             }
