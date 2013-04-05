@@ -28,6 +28,11 @@ public class TranslateHelper {
         resources = ResourceBundle.getBundle(FILE_NAME, l);
     }
     
+    //not implemented yet. get list localization file in package
+    public static String[] getLocalizations() {
+        return null;
+    }
+    
     //to avoid create instance
     private TranslateHelper() {
     }        
