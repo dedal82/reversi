@@ -7,7 +7,6 @@ package ua.vynnyk;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -26,6 +25,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.components.ColorChooser;
 import ua.vynnyk.game.EnumPlayer;
+import ua.vynnyk.translations.TranslateHelper;
 
 /**
  *
@@ -53,8 +53,8 @@ public class OptionsForm extends JDialog {
 
     private void initComponents() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);        
-        setTitle("Options");  
-        setPreferredSize(new Dimension(300, 250));
+        setTitle(TranslateHelper.getString("options"));  
+        setPreferredSize(new Dimension(400, 250));
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
         
@@ -62,10 +62,10 @@ public class OptionsForm extends JDialog {
         JPanel gamePanel = new JPanel(new MigLayout("fillx, wrap 1", "", ""));        
         
         JPanel playersPanel = new JPanel();
-        playersPanel.setBorder(BorderFactory.createTitledBorder("Players"));
-        JRadioButton plVsPl = new JRadioButton("Player Vs Player");
+        playersPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.game.players")));
+        JRadioButton plVsPl = new JRadioButton(TranslateHelper.getString("options.game.plvspl"));
         plVsPl.setActionCommand("0");        
-        JRadioButton plVsAI = new JRadioButton("Player Vs Ai");
+        JRadioButton plVsAI = new JRadioButton(TranslateHelper.getString("options.game.plvsai"));
         plVsAI.setActionCommand("1");
         ButtonGroup btnGroupPlayers = new ButtonGroup();
         btnGroupPlayers.add(plVsPl);
@@ -88,13 +88,13 @@ public class OptionsForm extends JDialog {
         playersPanel.add(plVsAI);
         
         JPanel levelAIPanel = new JPanel();
-        levelAIPanel.setBorder(BorderFactory.createTitledBorder("AI Level"));
+        levelAIPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.game.ailevel")));
         
-        JRadioButton level0 = new JRadioButton("Begginer");
+        JRadioButton level0 = new JRadioButton(TranslateHelper.getString("options.game.begginer"));
         level0.setActionCommand("0");        
-        JRadioButton level1 = new JRadioButton("Normal");
+        JRadioButton level1 = new JRadioButton(TranslateHelper.getString("options.game.normal"));
         level1.setActionCommand("1");        
-        JRadioButton level2 = new JRadioButton("Advanced");
+        JRadioButton level2 = new JRadioButton(TranslateHelper.getString("options.game.advanced"));
         level2.setActionCommand("2");
         ButtonGroup btnGroupLevel = new ButtonGroup();
         btnGroupLevel.add(level0);
@@ -124,12 +124,12 @@ public class OptionsForm extends JDialog {
         gamePanel.add(playersPanel, "grow");
         gamePanel.add(levelAIPanel, "grow");
         
-        tabbedPane.add("Game", gamePanel);
+        tabbedPane.add(TranslateHelper.getString("options.game"), gamePanel);
         //Players
         //Graphic
         
         JPanel colorPanel = new JPanel(new MigLayout("fillx, wrap 2", "[align right]10[max]", ""));
-        colorPanel.setBorder(BorderFactory.createTitledBorder("Colors"));
+        colorPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.view.colors")));
         
         MouseListener colorLabelListener = new MouseAdapter() {
             @Override
@@ -137,7 +137,7 @@ public class OptionsForm extends JDialog {
                 final JComponent colorComponent = (JComponent) e.getSource();
                 Color newColor = ColorChooser.showDialog(
                                      OptionsForm.this, 
-                                     "Choose Color", 
+                                     TranslateHelper.getString("options.view.choosecolor"), 
                                      colorComponent.getBackground());            
                 if (newColor != null) {
                     colorComponent.setBackground(newColor);
@@ -145,16 +145,16 @@ public class OptionsForm extends JDialog {
             }            
         };
         
-        JLabel boardColorLabel = new JLabel("Cells");
+        JLabel boardColorLabel = new JLabel(TranslateHelper.getString("options.view.cells"));
         boardColor = createColorLabel(gameForm.getBoardColor(), colorLabelListener);
         
-        JLabel lineColorLabel = new JLabel("Lines");
+        JLabel lineColorLabel = new JLabel(TranslateHelper.getString("options.view.lines"));
         lineColor = createColorLabel(gameForm.getLineColor(), colorLabelListener);
         
-        JLabel firstColorLabel = new JLabel("First Player");
+        JLabel firstColorLabel = new JLabel(TranslateHelper.getString("options.view.firstplayer"));
         firstColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.FIRST), colorLabelListener);
         
-        JLabel secondColorLabel = new JLabel("Second Player");
+        JLabel secondColorLabel = new JLabel(TranslateHelper.getString("options.view.secondplayer"));
         secondColor = createColorLabel(gameForm.getCoinColor(EnumPlayer.SECOND), colorLabelListener);
         
         colorPanel.add(boardColorLabel);
@@ -169,13 +169,13 @@ public class OptionsForm extends JDialog {
         colorPanel.add(secondColorLabel);
         colorPanel.add(secondColor, "grow");
         
-        tabbedPane.add("Graphic", colorPanel);
+        tabbedPane.add(TranslateHelper.getString("options.view"), colorPanel);
         //Графіка          
                 
         JPanel buttonPanel = new JPanel();
                     
-        buttonApply = new JButton("Apply");
-        buttonCancel = new JButton("Cancel");
+        buttonApply = new JButton(TranslateHelper.getString("options.apply"));
+        buttonCancel = new JButton(TranslateHelper.getString("options.cancel"));
         
         buttonPanel.add(buttonApply);
         buttonPanel.add(buttonCancel);

@@ -170,29 +170,26 @@ public class GameControler implements BoardGameControlerInterface {
     
     @Override
     public void startAIBattle() { 
-        newGame();
-        //if AI battle not yet executing, then run thread. 
-        if (status != AI_VS_AI) {
-            oldStatus = status;            
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    setStatus(AI_VS_AI);
-                    while (!gameEnd) {
-                        pause(AI_TIMEOUT);                
-                        synchronized (status) {
-                            if (status == AI_VS_AI) {
-                                game.doAIMove();
-                            } else {
-                                break;
-                            }                    
-                        }
+        newGame();        
+        oldStatus = status;            
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setStatus(AI_VS_AI);
+                while (!gameEnd) {
+                    pause(AI_TIMEOUT);                
+                    synchronized (status) {
+                        if (status == AI_VS_AI) {
+                            game.doAIMove();
+                        } else {
+                            break;
+                        }                    
                     }
-                    status = oldStatus;
                 }
-            });
-            t.start();  
-        }
+                status = oldStatus;
+            }
+        });
+        t.start();          
     }
     
     @Override

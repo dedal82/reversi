@@ -4,10 +4,12 @@
  */
 package ua.vynnyk;
 
+import java.util.Locale;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.controler.GameControler;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.BoardGameReversi;
+import ua.vynnyk.translations.TranslateHelper;
 
 /**
  *
@@ -18,10 +20,14 @@ public class Reversi {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {         
+    public static void main(String[] args) {           
         final BoardGameInterface game = new BoardGameReversi();  
         final BoardGameControlerInterface controler = new GameControler(game);
+        
+        TranslateHelper.setResources(Locale.ROOT);
+        
         setLookAndFeel();
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
