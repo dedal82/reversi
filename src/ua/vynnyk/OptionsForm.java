@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.components.ColorChooser;
 import ua.vynnyk.game.EnumPlayer;
@@ -52,7 +52,7 @@ public class OptionsForm extends JDialog {
     }    
 
     private void initComponents() {
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);        
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);        
         setTitle(TranslateHelper.getString("options"));  
         setPreferredSize(new Dimension(400, 250));
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -170,7 +170,13 @@ public class OptionsForm extends JDialog {
         colorPanel.add(secondColor, "grow");
         
         tabbedPane.add(TranslateHelper.getString("options.view"), colorPanel);
-        //Графіка          
+        //View 
+        //Language
+        JPanel langPanel = new JPanel();
+        langPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.chooselang")));
+        
+        tabbedPane.add(TranslateHelper.getString("options.language"), langPanel);        
+        //Language
                 
         JPanel buttonPanel = new JPanel();
                     

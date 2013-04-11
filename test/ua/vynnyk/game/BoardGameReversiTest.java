@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
  */
 public class BoardGameReversiTest {
     
+    private BoardGameReversi boardGame;
+    
     public BoardGameReversiTest() {
     }
     
@@ -30,10 +32,12 @@ public class BoardGameReversiTest {
     
     @Before
     public void setUp() {
+        boardGame = new BoardGameReversi();
     }
     
     @After
     public void tearDown() {
+        boardGame = null;
     }
 
     /**
@@ -41,11 +45,11 @@ public class BoardGameReversiTest {
      */
     @Test
     public void testNewGame() {
-        System.out.println("newGame");
-        BoardGameReversi instance = new BoardGameReversi();
-        instance.newGame();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("newGame");        
+        boardGame.newGame();
+        assertEquals("Error count NONE cells", boardGame.getWidth() * boardGame.getHeight() - 4, boardGame.getCount(EnumPlayer.NONE));
+        assertEquals("Error count FIRST cells", 2, boardGame.getCount(EnumPlayer.FIRST));
+        assertEquals("Error count SECOND cells", 2, boardGame.getCount(EnumPlayer.SECOND));
     }
 
     /**
@@ -54,13 +58,11 @@ public class BoardGameReversiTest {
     @Test
     public void testDoMove() {
         System.out.println("doMove");
-        GameCell cell = null;
-        BoardGameReversi instance = new BoardGameReversi();
-        boolean expResult = false;
-        boolean result = instance.doMove(cell);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        GameCell cell = new GameCell(4, 2);
+        boardGame.newGame();        
+        assertEquals("Can not do move", true, boardGame.doMove(cell));
+        assertEquals("Cell is not FIRST", EnumPlayer.FIRST, boardGame.getPlayer(cell));
+        assertEquals("Cell was not reversed", EnumPlayer.FIRST, boardGame.getPlayer(new GameCell(4, 3)));
     }
 
     /**
@@ -69,10 +71,12 @@ public class BoardGameReversiTest {
     @Test
     public void testUndoMove() {
         System.out.println("UndoMove");
-        BoardGameReversi instance = new BoardGameReversi();
-        instance.UndoMove();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        GameCell cell = new GameCell(4, 2);
+        boardGame.newGame();
+        boardGame.doMove(cell);
+        boardGame.UndoMove();
+        assertEquals("Cell is not NONE", EnumPlayer.NONE, boardGame.getPlayer(cell));
+        assertEquals("Cell is not SECOND" ,EnumPlayer.SECOND, boardGame.getPlayer(new GameCell(4, 3)));
     }
 
     /**
@@ -80,13 +84,11 @@ public class BoardGameReversiTest {
      */
     @Test
     public void testGetBestMove() {
-        System.out.println("getBestMove");
-        BoardGameReversi instance = new BoardGameReversi();
-        GameCell expResult = null;
-        GameCell result = instance.getBestMove();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("getBestMove");        
+        boardGame.newGame();
+        GameCell cell = boardGame.getBestMove();
+        assertNotNull("Null cell returned", cell);
+        assertEquals("Incorrect move", EnumPlayer.NONE, boardGame.getPlayer(cell));        
     }
 
     /**
@@ -95,11 +97,9 @@ public class BoardGameReversiTest {
     @Test
     public void testDoAIMove() {
         System.out.println("doAIMove");
-        BoardGameReversi instance = new BoardGameReversi();
-        GameCell expResult = null;
-        GameCell result = instance.doAIMove();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        boardGame.newGame();
+        GameCell cell = boardGame.getBestMove();
+        assertNotNull("Null cell returned", cell);
+        assertEquals("Incorrect move", EnumPlayer.NONE, boardGame.getPlayer(cell));
     }
 }
