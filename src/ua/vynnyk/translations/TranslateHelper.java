@@ -4,8 +4,11 @@
  */
 package ua.vynnyk.translations;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +33,11 @@ public class TranslateHelper {
     
     //not implemented yet. get list localization file in package
     public static String[] getLocalizations() {
+        try {
+            ClassLoader.getSystemResources(FILE_NAME);
+        } catch (IOException ex) {
+            Logger.getLogger(TranslateHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return null;
     }
     
