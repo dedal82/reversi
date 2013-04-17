@@ -175,6 +175,7 @@ public class OptionsForm extends JDialog {
         JPanel langPanel = new JPanel();
         langPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.chooselang")));
         
+        
         tabbedPane.add(TranslateHelper.getString("options.language"), langPanel);        
         //Language
                 

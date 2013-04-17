@@ -4,6 +4,7 @@
  */
 package ua.vynnyk.translations;
 
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -30,6 +31,7 @@ public class TranslateHelper {
     
     //not implemented yet. get list localization file in package
     public static String[] getLocalizations() {
+        Files.
         return null;
     }
     
