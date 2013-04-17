@@ -14,8 +14,12 @@ import java.util.ResourceBundle;
  */
 public class TranslateHelper {
     private static final String FILE_NAME = "ua.vynnyk.translations.translate";
+    private static Locale [] locales = {Locale.US, 
+                                        new Locale("uk_UA"), 
+                                        new Locale("ru_RU")};  
     
-    private static ResourceBundle resources = ResourceBundle.getBundle(FILE_NAME);
+    private static Locale currentLocale = Locale.US;    
+    private static ResourceBundle resources = ResourceBundle.getBundle(FILE_NAME, currentLocale);
     
     public static String getString(String resource) {
         try { 
@@ -25,17 +29,21 @@ public class TranslateHelper {
         }            
     }
     
-    public static void setResources(Locale l) {
+    public static void setResources(Locale l) {        
         resources = ResourceBundle.getBundle(FILE_NAME, l);
+        currentLocale = l;
     }
     
     //not implemented yet. get list localization file in package
-    public static String[] getLocalizations() {
-        Files.
-        return null;
+    public static Locale[] getLocalizations() {
+        return locales;
+    }
+    
+    public static Locale getLocale() {
+        return currentLocale;
     }
     
     //to avoid create instance
     private TranslateHelper() {
-    }        
+    }   
 }

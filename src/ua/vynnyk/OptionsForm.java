@@ -12,9 +12,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -174,8 +176,9 @@ public class OptionsForm extends JDialog {
         //Language
         JPanel langPanel = new JPanel();
         langPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.chooselang")));
-        
-        
+        JComboBox<Locale> localeBox = new JComboBox<>(TranslateHelper.getLocalizations());
+        localeBox.setSelectedItem(TranslateHelper.getLocale());
+        langPanel.add(localeBox);
         tabbedPane.add(TranslateHelper.getString("options.language"), langPanel);        
         //Language
                 
