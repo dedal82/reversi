@@ -367,5 +367,5 @@ public class GameForm extends JFrame {
     private void refreshState() {
         board.refreshCoins();
         changeCount(game.getCount(EnumPlayer.FIRST), game.getCount(EnumPlayer.SECOND));
-    }        
+    }         
 }
