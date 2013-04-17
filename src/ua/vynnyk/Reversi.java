@@ -20,9 +20,11 @@ public class Reversi {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {           
+    public static void main(String[] args) {            
         final BoardGameInterface game = new BoardGameReversi();  
         final BoardGameControlerInterface controler = new GameControler(game);
+                        
+        TranslateHelper.setResources(new Locale(Options.getOption("Locale")));
                         
         setLookAndFeel();
         
