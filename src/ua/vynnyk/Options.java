@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class Options {
-    private static final String FILE_NAME = "./init.xml";
+    private static final String FILE_NAME = "./conf/init.xml";
     private static Properties p = new Properties();
     
     static {

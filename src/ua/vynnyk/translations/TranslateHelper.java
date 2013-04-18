@@ -4,7 +4,6 @@
  */
 package ua.vynnyk.translations;
 
-import java.nio.file.Files;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -14,7 +13,7 @@ import java.util.ResourceBundle;
  */
 public class TranslateHelper {
     private static final String FILE_NAME = "ua.vynnyk.translations.translate";
-    private static Locale [] locales = {Locale.US, 
+    private static final Locale [] locales = {Locale.US, 
                                         new Locale("uk_UA"), 
                                         new Locale("ru_RU")};  
     
@@ -29,7 +28,7 @@ public class TranslateHelper {
         }            
     }
     
-    public static void setResources(Locale l) {        
+    public static void setResources(Locale l) {    
         resources = ResourceBundle.getBundle(FILE_NAME, l);
         currentLocale = l;
     }

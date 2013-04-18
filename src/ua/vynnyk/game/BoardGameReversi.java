@@ -5,8 +5,12 @@
 package ua.vynnyk.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -25,6 +29,13 @@ public class BoardGameReversi extends AbstractBoardGame {
     private static final int LEVEL_2 = 2;    
     private static final String OPTION_RESULT_MOVE = "OPTION_RESULT_MOVE";
     private static final String OPTION_AI_LEVEL = "OPTION_AI_LEVEL";
+    
+    private static final Integer CELL_CORNERS = 0;
+    private static final Integer CELL_NEAR_CORNERS = 1;
+    private static final Integer CELL_BORDERS = 2;
+    private static final Integer CELL_NEAR_BORDERS = 3;
+    private Map<Integer, Set<GameCell>> cells;
+    private Map<GameCell, Set<GameCell>> corners;
     
     // List of moves to undo. First element is move to undo and other elements are cells to undo revers
     private List<GameCell> undoList;   
@@ -49,8 +60,51 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     private void init() {
         undoList = new LinkedList<>();
+        cells = new HashMap<>();
+        corners = new HashMap<>();
         setOption(OPTION_RESULT_MOVE, true);        
         setOption(OPTION_AI_LEVEL, LEVEL_0);
+        
+        addCorners();        
+        addBorders();
+        addNearBorders();
+    }
+    
+    private void addCorners() {
+        Set tmpSet = new HashSet(4);        
+        GameCell tmpCell;       
+        
+        tmpCell = new GameCell(0, 0);
+        tmpSet.add(tmpCell);
+        corners.put(tmpCell, getNearCells(tmpCell));
+        
+        tmpCell = new GameCell(0, getWidth() - 1);
+        tmpSet.add(tmpCell);
+        
+        tmpCell = new GameCell(getHeight() - 1, getWidth() - 1);
+        tmpSet.add(tmpCell);
+        
+        tmpCell = new GameCell(getHeight() - 1, 0);
+        tmpSet.add(tmpCell);                
+        
+        cells.put(CELL_CORNERS, tmpSet);                        
+    }
+    
+    private Set<GameCell> getNearCells(GameCell cell) {
+        GameCell tmpCell;
+        Set<GameCell> tmpSet;        
+        if (isInBoard(cell.getX(), cell.getY() + UP)) {
+            
+        }
+        return null;
+    }
+    
+    private void addBorders() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void addNearBorders() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
             
     /**
@@ -261,5 +315,5 @@ public class BoardGameReversi extends AbstractBoardGame {
             }
         }
         return moves.get((int) Math.floor(Math.random() * (moves.size())));                
-    }          
+    }            
 }
