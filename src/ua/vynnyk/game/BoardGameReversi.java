@@ -255,14 +255,13 @@ public class BoardGameReversi extends AbstractBoardGame {
     private boolean isNear(int x, int y, EnumPlayer nearPlayer) {
         final int w = getWidth();
         final int h = getHeight();        
-        return (y > 0 && getPlayer(x, y - 1) == nearPlayer) || 
-               (y < h - 1 && getPlayer(x, y + 1) == nearPlayer) ||
-               (x > 0 && getPlayer(x - 1, y) == nearPlayer) ||
-               (x < w - 1 && getPlayer(x + 1, y) == nearPlayer) ||
-               (x > 0 && y > 0 && getPlayer(x - 1, y - 1) == nearPlayer) ||
-               (x < w - 1 && y > 0 && getPlayer(x + 1, y - 1) == nearPlayer) ||
-               (x < w - 1 && y < h - 1 && getPlayer(x + 1, y + 1) == nearPlayer) ||
-               (x > 0 && y < h - 1 && getPlayer(x - 1 , y + 1) == nearPlayer);
+        Set<GameCell> set = getNearCells(new GameCell(x, y));
+        for (GameCell gameCell : set) {
+            if (getPlayer(gameCell) == nearPlayer) {
+                return true;
+            }
+        }
+        return false;
     }       
     
     // return true if game end 
