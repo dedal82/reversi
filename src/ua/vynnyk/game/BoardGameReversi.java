@@ -44,8 +44,8 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     /**
      *
-     * @param x - розмір гри по-горизонталі
-     * @param y - розмір гри по-вертикалі
+     * @param x - game size by horizontal
+     * @param y - game size by vertical
      */
     public BoardGameReversi(int x, int y) {        
         super(x, y);
