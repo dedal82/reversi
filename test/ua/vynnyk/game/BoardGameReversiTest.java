@@ -4,6 +4,10 @@
  */
 package ua.vynnyk.game;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -102,4 +106,54 @@ public class BoardGameReversiTest {
         assertNotNull("Null cell returned", cell);
         assertEquals("Incorrect move", EnumPlayer.NONE, boardGame.getPlayer(cell));
     }
+    
+    /**
+     * Test of addCorners method, of class BoardGameReversi.
+     * Used reflections to test private field
+     */
+    @Test
+    public void testAddCorners() throws Exception {
+        System.out.println("addCorners");                      
+        Field field = BoardGameReversi.class.getDeclaredField("corners");
+        field.setAccessible(true);
+        
+        Map<GameCell, Set<GameCell>> corners = (Map<GameCell, Set<GameCell>>) field.get(boardGame);
+        GameCell cell = new GameCell(0, 0);
+        Set<GameCell> set = corners.get(cell);
+        assertNotNull("Corner cell is null", cell);
+        assertTrue(set.contains(new GameCell(0, 1)));
+        assertTrue(set.contains(new GameCell(1, 1)));
+        assertTrue(set.contains(new GameCell(1, 0)));        
+    }
+    
+    /**
+     * Test of addBorders method, of class BoardGameReversi.
+     * Used reflections to test private field
+     */
+    @Test
+    public void testAddBorders() throws Exception {
+        System.out.println("addBorders");                      
+        Field field = BoardGameReversi.class.getDeclaredField("cells");
+        field.setAccessible(true);
+        
+        Map<Integer, Set<GameCell>> cells = (Map<Integer, Set<GameCell>>) field.get(boardGame);        
+        Set<GameCell> set = cells.get(1);        
+        assertNotNull("Corner cell is null", set);        
+    }
+    
+    /**
+     * Test of addBorders method, of class BoardGameReversi.
+     * Used reflections to test private field
+     */
+    @Test
+    public void testAddNearBorders() throws Exception {
+        System.out.println("addNearBorders");                      
+        Field field = BoardGameReversi.class.getDeclaredField("cells");
+        field.setAccessible(true);
+        
+        Map<Integer, Set<GameCell>> cells = (Map<Integer, Set<GameCell>>) field.get(boardGame);        
+        Set<GameCell> set = cells.get(2);        
+        assertNotNull("Corner cell is null", set);        
+    }
+    
 }

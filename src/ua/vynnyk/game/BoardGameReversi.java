@@ -19,21 +19,15 @@ import java.util.Set;
 public class BoardGameReversi extends AbstractBoardGame {
     
     private static final long serialVersionUID = 1L;    
-    private static final int NONE = 0;
-    private static final int LEFT = -1;
-    private static final int RIGHT = 1;
-    private static final int UP = -1;
-    private static final int DOWN = 1;
     private static final int LEVEL_0 = 0;
     private static final int LEVEL_1 = 1;    
     private static final int LEVEL_2 = 2;    
     private static final String OPTION_RESULT_MOVE = "OPTION_RESULT_MOVE";
     private static final String OPTION_AI_LEVEL = "OPTION_AI_LEVEL";
     
-    private static final Integer CELL_CORNERS = 0;
-    private static final Integer CELL_NEAR_CORNERS = 1;
-    private static final Integer CELL_BORDERS = 2;
-    private static final Integer CELL_NEAR_BORDERS = 3;
+    private static final Integer CELL_CORNERS = 0;    
+    private static final Integer CELL_BORDERS = 1;
+    private static final Integer CELL_NEAR_BORDERS = 2;
     private Map<Integer, Set<GameCell>> cells;
     private Map<GameCell, Set<GameCell>> corners;
     
@@ -71,44 +65,65 @@ public class BoardGameReversi extends AbstractBoardGame {
     }
     
     private void addCorners() {
-        Set tmpSet = new HashSet(4);        
-        GameCell tmpCell;       
+        Set tmpSet = new HashSet(4);                      
         
-        tmpCell = new GameCell(0, 0);
-        tmpSet.add(tmpCell);
-        corners.put(tmpCell, getNearCells(tmpCell));
-        
-        tmpCell = new GameCell(0, getWidth() - 1);
-        tmpSet.add(tmpCell);
-        
-        tmpCell = new GameCell(getHeight() - 1, getWidth() - 1);
-        tmpSet.add(tmpCell);
-        
-        tmpCell = new GameCell(getHeight() - 1, 0);
-        tmpSet.add(tmpCell);                
-        
+        addCorner(tmpSet, new GameCell(0, 0));
+        addCorner(tmpSet, new GameCell(0, getWidth() - 1));
+        addCorner(tmpSet, new GameCell(getHeight() - 1, getWidth() - 1));
+        addCorner(tmpSet, new GameCell(getHeight() - 1, 0));
+                  
         cells.put(CELL_CORNERS, tmpSet);                        
     }
     
-    private Set<GameCell> getNearCells(GameCell cell) {
-        GameCell tmpCell;
-        Set<GameCell> tmpSet;        
-        if (isInBoard(cell.getX(), cell.getY() + UP)) {
-            
-        }
-        return null;
+    private void addCorner(Set set, GameCell cell) {
+        set.add(cell);
+        corners.put(cell, getNearCells(cell));
+    }
+    
+    private Set<GameCell> getNearCells(GameCell cell) {        
+        Set<GameCell> cellsSet = new HashSet<>();      
+        for (int i = 0; i < 360; i += 45) {
+            int dx = (int) Math.round(Math.sin(Math.toRadians(i)));
+            int dy = (int) Math.round(Math.cos(Math.toRadians(i)));
+            if (isInBoard(cell.getX() + dx, cell.getY() + dy)) {
+                cellsSet.add(new GameCell(cell, dx, dy));
+            }
+        }                
+        return cellsSet;
     }
     
     private void addBorders() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        Set<GameCell> set = new HashSet<>();
+        final int width = getWidth();
+        final int height = getHeight();
+        for (int x = 0; x < width; x++) {
+            set.add(new GameCell(x, 0));
+            set.add(new GameCell(x, height - 1));            
+        }
+        for (int y = 1; y < height - 1; y++) {
+            set.add(new GameCell(0, y));
+            set.add(new GameCell(width - 1, y));            
+        }  
+        cells.put(CELL_BORDERS, set);
     }
 
     private void addNearBorders() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        Set<GameCell> set = new HashSet<>();
+        final int width = getWidth();
+        final int height = getHeight();
+        for (int x = 1; x < width - 1; x++) {
+            set.add(new GameCell(x, 1));
+            set.add(new GameCell(x, height - 2));            
+        }
+        for (int y = 2; y < height - 2; y++) {
+            set.add(new GameCell(1, y));
+            set.add(new GameCell(width - 2, y));            
+        }  
+        cells.put(CELL_NEAR_BORDERS, set);
     }
             
     /**
-     * розпочинає нову гру
+     * Start new game
      */
     
     @Override
@@ -164,14 +179,14 @@ public class BoardGameReversi extends AbstractBoardGame {
     }
     
     private int reversCoins(int x, int y, EnumPlayer player, boolean revers) {
-        return reversDirection(x, y, NONE, UP, player, revers) +    //вверх
-               reversDirection(x, y, NONE, DOWN, player, revers) +  //вниз
-               reversDirection(x, y, LEFT, NONE, player, revers) +  // вліво
-               reversDirection(x, y, RIGHT, NONE, player, revers) + //  вправо
-               reversDirection(x, y, LEFT, UP, player, revers) +    // лівий верх
-               reversDirection(x, y, RIGHT, UP, player, revers) +   // правий верх
-               reversDirection(x, y, RIGHT, DOWN, player, revers) + // правий низ
-               reversDirection(x, y, LEFT, DOWN, player, revers);   // лівий низ   
+        int count = 0;
+        for (int i = 0; i < 360; i += 45) {
+            int dx = (int) Math.round(Math.sin(Math.toRadians(i)));
+            int dy = (int) Math.round(Math.cos(Math.toRadians(i)));
+            
+            count += reversDirection(x, y, dx, dy, player, revers);
+        }         
+        return count;
     }
     
     private int reversDirection(int x, int y,int dX, int dY, EnumPlayer player,  boolean revers) {                       

@@ -23,7 +23,12 @@ public class GameCell implements Serializable {
     public GameCell(int x, int y) {
         this.x = x;
         this.y = y;
-    }        
+    }
+    
+    public GameCell(GameCell cell, int dx, int dy) {
+        this.x = cell.x + dx;
+        this.y = cell.y + dy;
+    }
 
     public int getX() {
         return x;
