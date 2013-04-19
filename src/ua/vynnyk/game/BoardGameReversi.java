@@ -26,8 +26,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     private static final String OPTION_AI_LEVEL = "OPTION_AI_LEVEL";
     
     private static final Integer CELL_CORNERS = 0;    
-    private static final Integer CELL_BORDERS = 1;
-    private static final Integer CELL_NEAR_BORDERS = 2;
+    private static final Integer CELL_NEAR_CORNERS = 1;    
+    private static final Integer CELL_BORDERS = 2;
+    private static final Integer CELL_NEAR_BORDERS = 3;
     private Map<Integer, Set<GameCell>> cells;
     private Map<GameCell, Set<GameCell>> corners;
     
@@ -57,7 +58,7 @@ public class BoardGameReversi extends AbstractBoardGame {
         cells = new HashMap<>();
         corners = new HashMap<>();
         setOption(OPTION_RESULT_MOVE, true);        
-        setOption(OPTION_AI_LEVEL, LEVEL_0);
+        setOption(OPTION_AI_LEVEL, LEVEL_2);
         
         addCorners();        
         addBorders();
@@ -66,6 +67,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     private void addCorners() {
         Set tmpSet = new HashSet(4);                      
+        cells.put(CELL_NEAR_CORNERS, new HashSet<GameCell>());
         
         addCorner(tmpSet, new GameCell(0, 0));
         addCorner(tmpSet, new GameCell(0, getWidth() - 1));
@@ -77,7 +79,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     private void addCorner(Set set, GameCell cell) {
         set.add(cell);
-        corners.put(cell, getNearCells(cell));
+        final Set<GameCell> nearSet = getNearCells(cell);
+        corners.put(cell, nearSet);
+        cells.get(CELL_NEAR_CORNERS).addAll(nearSet);
     }
     
     private Set<GameCell> getNearCells(GameCell cell) {        
@@ -232,7 +236,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     private boolean isChangeble(EnumPlayer player) {
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {
-                if (getPlayer(i, j) == EnumPlayer.NONE && isCorrect(i, j, player)) {
+                if (isCorrect(i, j, player)) {
                     return true;
                 }
             }
@@ -243,7 +247,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     //return true when near is other player and OPTION_RESULT_MOVE is diseble or move will revers one or more coins
     private boolean isCorrect(int x, int y, EnumPlayer player) {
-        return isInBoard(x, y) && isNear(x, y, getNextPlayer(player)) && getPlayer(x , y) == EnumPlayer.NONE &&
+        return isInBoard(x, y) && getPlayer(x , y) == EnumPlayer.NONE && isNear(x, y, getNextPlayer(player)) &&
                (getOption(OPTION_RESULT_MOVE) == false || reversCoins(x, y, player, false) > 0);                    
     }
     
@@ -298,7 +302,7 @@ public class BoardGameReversi extends AbstractBoardGame {
 
     @Override
     public GameCell getBestMove() {
-        return getAIMove(LEVEL_0);
+        return getAIMove(LEVEL_2);
     }
     
     // implemented only 0-level AI, without strategy, with max result move. Just for testing
@@ -309,26 +313,76 @@ public class BoardGameReversi extends AbstractBoardGame {
         doCorrectMove(cell);
         return cell;
     }
-        
-    private GameCell getAIMove(int level) {
+    
+    private GameCell getAIMove(int level) {        
+        if (level < 0 || level > 2) {
+            throw new IllegalArgumentException("AI level " + level + " doesn't exists");       
+        }        
         List<GameCell> moves = new ArrayList<>();
         final EnumPlayer activePlayer = getActivePlayer();
         int maxCountReversed = 0;
+        int maxLevel = -2;
         int countReversed;
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {                
                 if (isCorrect(i, j, activePlayer)) {
-                    countReversed = reversCoins(i, j, activePlayer ,false);
-                    if (countReversed >= maxCountReversed) {
-                        if (countReversed > maxCountReversed) {
-                            maxCountReversed = countReversed;
+                    final GameCell cell = new GameCell(i, j);
+                    countReversed = reversCoins(i, j, activePlayer ,false);                    
+                    final int tmpLevel = getMoveLevel(cell, level);                                                
+                    if (tmpLevel > maxLevel || (tmpLevel == maxLevel && countReversed >= maxCountReversed)) {
+                        if (tmpLevel > maxLevel || (tmpLevel == maxLevel && countReversed > maxCountReversed)) {                            
                             moves.clear();
                         }
-                        moves.add(new GameCell(i, j));
+                        moves.add(cell);
+                        maxLevel = tmpLevel;
+                        maxCountReversed = countReversed;
                     }                      
                 }
             }
         }
-        return moves.get((int) Math.floor(Math.random() * (moves.size())));                
-    }            
+        return moves.get((int) Math.floor(Math.random() * (moves.size())));
+    }
+                         
+    private int getMoveLevel(GameCell cell, int maxLevel) {
+        final EnumPlayer activePlayer = getActivePlayer();
+        int level = 0;  
+        if (maxLevel >= LEVEL_1) {
+            if (cells.get(CELL_BORDERS).contains(cell)) {
+                level = 1;
+            } else if (cells.get(CELL_NEAR_BORDERS).contains(cell)) {
+                level = -1;
+            }
+            if (level >= 0 && !isReversMove(cell)) {
+                level = 2;
+            }
+        }        
+        if (maxLevel >= LEVEL_2) {
+            if (corners.containsKey(cell)) {
+                level = 3;                        
+            } else if (cells.get(CELL_NEAR_CORNERS).contains(cell)) {
+                for (Map.Entry<GameCell, Set<GameCell>> entry : corners.entrySet()) {
+                    if (entry.getValue().contains(cell)) {
+                        if (getPlayer(entry.getKey()) == EnumPlayer.NONE) {
+                            int count = 0;
+                            for (GameCell nearCornerCell : entry.getValue()) {
+                                if (getPlayer(nearCornerCell) == activePlayer) {
+                                    count++;
+                                }
+                            }
+                            if (count == 0) {
+                                level = -2;
+                            }
+                        }                    
+                        break;
+                    }                    
+                }               
+            }
+        }
+        return level;
+    }
+
+    private boolean isReversMove(GameCell cell) {
+        final EnumPlayer activePlayer = getActivePlayer();
+        return false;
+    }
 }

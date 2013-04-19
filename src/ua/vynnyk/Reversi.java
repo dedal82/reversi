@@ -25,7 +25,7 @@ public class Reversi {
         final BoardGameControlerInterface controler = new GameControler(game);
           
         TranslateHelper.setResources(new Locale(Options.getOption("Locale")));
-                        
+                       
         setLookAndFeel();
         
         java.awt.EventQueue.invokeLater(new Runnable() {

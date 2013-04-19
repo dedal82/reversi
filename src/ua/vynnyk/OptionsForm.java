@@ -49,6 +49,8 @@ public class OptionsForm extends JDialog {
     public OptionsForm(GameForm gameForm, boolean modal) {
         super(gameForm, modal);        
         this.gameForm = gameForm;
+        this.level = gameForm.getAILevel();
+        this.players = gameForm.getPlayers();
         
         initComponents();
     }    
@@ -80,7 +82,7 @@ public class OptionsForm extends JDialog {
         };
         plVsPl.addActionListener(lstnrPlayers);
         plVsAI.addActionListener(lstnrPlayers);
-        switch (gameForm.getPlayers()) {
+        switch (players) {
             case 0: plVsPl.setSelected(true);
                     break;
             case 1: plVsAI.setSelected(true);
@@ -110,8 +112,8 @@ public class OptionsForm extends JDialog {
         };
         level0.addActionListener(lstnrLevel);
         level1.addActionListener(lstnrLevel);
-        level2.addActionListener(lstnrLevel);       
-        switch (gameForm.getAILevel()) {
+        level2.addActionListener(lstnrLevel);         
+        switch (level) {
             case 0: level0.setSelected(true);
                     break;
             case 1: level1.setSelected(true);
