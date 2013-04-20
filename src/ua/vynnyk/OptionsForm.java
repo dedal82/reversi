@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,13 +21,17 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.OptionPaneUI;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.components.ColorChooser;
 import ua.vynnyk.game.EnumPlayer;
+import ua.vynnyk.options.Options;
+import ua.vynnyk.options.OptionsList;
 import ua.vynnyk.translations.TranslateHelper;
 
 /**
@@ -43,6 +48,7 @@ public class OptionsForm extends JDialog {
     private JLabel secondColor;
     private int players;
     private int level;
+    private JComboBox<Locale> localeBox;
     private JButton buttonApply;
     private JButton buttonCancel;
 
@@ -178,7 +184,7 @@ public class OptionsForm extends JDialog {
         //Language
         JPanel langPanel = new JPanel();
         langPanel.setBorder(BorderFactory.createTitledBorder(TranslateHelper.getString("options.chooselang")));
-        JComboBox<Locale> localeBox = new JComboBox<>(TranslateHelper.getLocalizations());
+        localeBox = new JComboBox<>(TranslateHelper.getLocalizations());
         localeBox.setSelectedItem(TranslateHelper.getLocale());
         langPanel.add(localeBox);
         tabbedPane.add(TranslateHelper.getString("options.language"), langPanel);        
@@ -212,23 +218,37 @@ public class OptionsForm extends JDialog {
         buttonApply.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean isChanged = false;
                 if (gameForm.getBoardColor() != boardColor.getBackground()) {
-                    gameForm.setBoardColor(boardColor.getBackground());
+                    gameForm.setBoardColor(boardColor.getBackground());                    
                 }
                 if (gameForm.getLineColor() != lineColor.getBackground()) {
-                    gameForm.setLineColor(lineColor.getBackground());
+                    gameForm.setLineColor(lineColor.getBackground());                    
                 }
                 if (gameForm.getCoinColor(EnumPlayer.FIRST) != firstColor.getBackground()) {
-                    gameForm.setCoinColor(EnumPlayer.FIRST, firstColor.getBackground());
+                    gameForm.setCoinColor(EnumPlayer.FIRST, firstColor.getBackground());                    
                 }
                 if (gameForm.getCoinColor(EnumPlayer.SECOND) != secondColor.getBackground()) {
-                    gameForm.setCoinColor(EnumPlayer.SECOND, secondColor.getBackground());
+                    gameForm.setCoinColor(EnumPlayer.SECOND, secondColor.getBackground());                    
                 }  
                 if (gameForm.getPlayers() != players) {
                     gameForm.setPlayers(players);
+                    Options.setOption(OptionsList.PLAYERS, Integer.toString(players));
+                    isChanged = true;
                 }
-                if (gameForm.getAILevel() != level) {
-                    gameForm.setAILevel(level);
+                if (gameForm.getAILevel() != level) {                    
+                    gameForm.setAILevel(level);                    
+                    Options.setOption(OptionsList.LEVEL, Integer.toString(level));
+                    isChanged = true;
+                }
+                if (!TranslateHelper.getLocale().equals(localeBox.getSelectedItem())) {                    
+                    TranslateHelper.setResources((Locale) localeBox.getSelectedItem());
+                    Options.setOption(OptionsList.LOCALE, localeBox.getSelectedItem().toString());
+                    isChanged = true;
+                    JOptionPane.showMessageDialog(OptionsForm.this, TranslateHelper.getString("options.reloadmessage"));
+                }
+                if (isChanged) {
+                    Options.save();
                 }
                 setVisible(false);
                 dispose();

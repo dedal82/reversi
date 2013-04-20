@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ua.vynnyk;
+package ua.vynnyk.options;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,7 +18,8 @@ import java.util.logging.Logger;
  *
  * @author Admin
  */
-public class Options {
+public class Options {    
+    
     private static final String FILE_NAME = "./conf/init.xml";
     private static Properties p = new Properties();
     
@@ -38,6 +39,10 @@ public class Options {
     
     public static String getOption(String key) {
         return p.getProperty(key);
+    }
+    
+    public static String getOption(String key, String defaultValue) {        
+        return p.getProperty(key, defaultValue);
     }
     
     public static void save() {        
