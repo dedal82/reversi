@@ -14,8 +14,8 @@ import java.util.ResourceBundle;
 public class TranslateHelper {
     private static final String FILE_NAME = "ua.vynnyk.translations.translate";
     private static final Locale [] locales = {Locale.US, 
-                                        new Locale("uk_UA"), 
-                                        new Locale("ru_RU")};  
+                                        new Locale("uk", "UA"), 
+                                        new Locale("ru", "RU")};  
     
     private static Locale currentLocale = Locale.US;    
     private static ResourceBundle resources = ResourceBundle.getBundle(FILE_NAME, currentLocale);
@@ -28,9 +28,9 @@ public class TranslateHelper {
         }            
     }
     
-    public static void setResources(Locale l) {    
-        resources = ResourceBundle.getBundle(FILE_NAME, l);
-        currentLocale = l;
+    public static void setResources(Locale locale) {                 
+        resources = ResourceBundle.getBundle(FILE_NAME, locale);
+        currentLocale = locale;
     }
     
     //not implemented yet. get list localization file in package

@@ -6,6 +6,7 @@ package ua.vynnyk;
 
 import ua.vynnyk.options.Options;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.controler.GameControler;
 import ua.vynnyk.game.BoardGameInterface;
@@ -27,7 +28,8 @@ public class Reversi {
         final BoardGameControlerInterface controler = new GameControler(game);
         controler.setStatus(Integer.parseInt(Options.getOption(OptionsList.PLAYERS, "1")));
         game.setOption(BoardGameReversi.OPTION_AI_LEVEL, Integer.parseInt(Options.getOption(OptionsList.LEVEL, "2")));        
-        TranslateHelper.setResources(new Locale(Options.getOption(OptionsList.LOCALE, "en_US")));
+        String locale = Options.getOption(OptionsList.LOCALE, "en_US");            
+        TranslateHelper.setResources(new Locale(locale.substring(0, 2),locale.substring(3)));
                        
         setLookAndFeel();
         
