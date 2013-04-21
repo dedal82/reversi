@@ -160,6 +160,7 @@ public class GameForm extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             controler.newGame();
+                            controler.setStatus(BoardGameControlerInterface.PL_VS_PL_SERVER);                            
                         }
                     });
                 }});
@@ -169,7 +170,8 @@ public class GameForm extends JFrame {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            
+                            controler.newGame();
+                            controler.setStatus(BoardGameControlerInterface.PL_VS_PL_CLIENT);                            
                         }
                     });
                 }});

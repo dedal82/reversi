@@ -17,9 +17,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     private static final long serialVersionUID = 1L;    
     
-    public static final int LEVEL_0 = 0;
-    public static final int LEVEL_1 = 1;    
-    public static final int LEVEL_2 = 2;    
+    static final int LEVEL_0 = 0;
+    static final int LEVEL_1 = 1;    
+    static final int LEVEL_2 = 2;    
     
     public static final String OPTION_RESULT_MOVE = "OPTION_RESULT_MOVE";
     public static final String OPTION_AI_LEVEL = "OPTION_AI_LEVEL";

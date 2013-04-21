@@ -7,6 +7,8 @@ package ua.vynnyk.controler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ua.vynnyk.board.GameBoard;
+import static ua.vynnyk.controler.BoardGameControlerInterface.PL_VS_AI;
+import static ua.vynnyk.controler.BoardGameControlerInterface.PL_VS_PL_SERVER;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.game.GameCell;
@@ -24,6 +26,7 @@ public class GameControler implements BoardGameControlerInterface {
     private Integer oldStatus;
     private volatile Integer status;
     private volatile boolean gameEnd;
+    private RemoteMovable remote;    
     
     public GameControler(BoardGameInterface game) {
         this.game = game;
@@ -61,9 +64,24 @@ public class GameControler implements BoardGameControlerInterface {
             return game.doMove(cell);
         } else if (status == PL_VS_AI) {
             return doPlayerVsAi(cell);
+        } else if ((status == PL_VS_PL_SERVER && game.getActivePlayer() == EnumPlayer.FIRST) ||
+                   (status == PL_VS_PL_CLIENT && game.getActivePlayer() == EnumPlayer.SECOND)) {
+            boolean isMoved = game.doMove(cell);
+            if (isMoved) {
+                remote.sendMove(cell);
+            }
+            return isMoved;
         }
         return false;        
-    }
+    }     
+    
+    @Override
+    public boolean doRemoteMove(GameCell cell) {
+        if (status == PL_VS_PL_SERVER || status == PL_VS_PL_CLIENT) {
+            return game.doMove(cell); 
+        }
+        return false;
+    } 
     
     private boolean doPlayerVsAi(GameCell cell) {
         synchronized (game) {
@@ -87,26 +105,39 @@ public class GameControler implements BoardGameControlerInterface {
             } 
         } 
     }
+    
+    private void startServer () {
+        remote = new Server(this);
+    }
+    
+    private void connectToServer() {
+        remote = new Client(this);
+    }
 
     @Override
     public void setStatus(int i) {
         synchronized (this) {
-            if (status != AI_VS_AI) {
+            if (status == PL_VS_PL || status == PL_VS_AI) {
                 this.oldStatus = this.status;
                 this.status = i;
             } else {
                 this.oldStatus = i;
             }
         }
-        if (status == PL_VS_AI) {
-           doAIMoveThread();
-        }               
+        switch (status) {
+            case PL_VS_AI: doAIMoveThread();
+                           break;
+            case PL_VS_PL_SERVER: startServer();
+                           break;
+            case PL_VS_PL_CLIENT: connectToServer();
+                           break;    
+        }                
     }
 
     @Override
     public int getStatus() {
         synchronized (this) {
-            if (status != AI_VS_AI) {
+            if (status == PL_VS_PL || status == PL_VS_AI) {
                 return status;
             } else {
                 return oldStatus;

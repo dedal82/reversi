@@ -20,10 +20,12 @@ public interface BoardGameControlerInterface {
     public static final int PL_VS_PL = 0;
     public static final int PL_VS_AI = 1;
     public static final int AI_VS_AI = 2;
-    public static final int PL_VS_PL_NET = 3;
+    public static final int PL_VS_PL_SERVER = 3;
+    public static final int PL_VS_PL_CLIENT = 4;
     
     public void newGame();
     public boolean doMove(GameCell cell);
+    public boolean doRemoteMove(GameCell cell);
     public void undoMove();
     public void startAIBattle();
     public void stopAIBattle();
