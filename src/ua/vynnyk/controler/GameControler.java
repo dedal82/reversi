@@ -6,9 +6,9 @@ package ua.vynnyk.controler;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import ua.vynnyk.board.GameBoard;
-import static ua.vynnyk.controler.BoardGameControlerInterface.PL_VS_AI;
-import static ua.vynnyk.controler.BoardGameControlerInterface.PL_VS_PL_SERVER;
+import static ua.vynnyk.controler.BoardGameControlerInterface.*;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.game.GameCell;
@@ -36,7 +36,7 @@ public class GameControler implements BoardGameControlerInterface {
     
     @Override
     public void newGame() { 
-        if (status == AI_VS_AI) {
+        if (status == AI_VS_AI || status == PL_VS_PL_CLIENT || status == PL_VS_PL_SERVER) {
             status = oldStatus;
         }
         gameEnd = false;
@@ -66,17 +66,21 @@ public class GameControler implements BoardGameControlerInterface {
             return doPlayerVsAi(cell);
         } else if ((status == PL_VS_PL_SERVER && game.getActivePlayer() == EnumPlayer.FIRST) ||
                    (status == PL_VS_PL_CLIENT && game.getActivePlayer() == EnumPlayer.SECOND)) {
-            boolean isMoved = game.doMove(cell);
-            if (isMoved) {
-                remote.sendMove(cell);
-            }
+            boolean isMoved = false;
+            if (remote.isConnected()) {
+                isMoved = game.doMove(cell);
+                if (isMoved) {
+                   remote.sendMove(cell);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Remote side is not connected");
+            }            
             return isMoved;
         }
         return false;        
     }     
-    
-    @Override
-    public boolean doRemoteMove(GameCell cell) {
+     
+    boolean doRemoteMove(GameCell cell) {
         if (status == PL_VS_PL_SERVER || status == PL_VS_PL_CLIENT) {
             return game.doMove(cell); 
         }
@@ -108,10 +112,18 @@ public class GameControler implements BoardGameControlerInterface {
     
     private void startServer () {
         remote = new Server(this);
+        new Thread((Runnable) remote).start();
     }
     
     private void connectToServer() {
-        remote = new Client(this);
+        String host = "localhost";
+        host = JOptionPane.showInputDialog("Input server host", host);
+        if (host != null) {
+            remote = new Client(host, this);
+            new Thread((Runnable) remote).start();
+        } else {
+            newGame();
+        }
     }
 
     @Override

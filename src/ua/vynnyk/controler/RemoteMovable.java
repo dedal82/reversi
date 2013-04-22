@@ -11,5 +11,6 @@ import ua.vynnyk.game.GameCell;
  * @author Admin
  */
 interface RemoteMovable {
-    void sendMove(GameCell cell);    
+    void sendMove(GameCell cell); 
+    boolean isConnected();
 }

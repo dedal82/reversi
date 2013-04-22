@@ -17,17 +17,23 @@ import ua.vynnyk.game.GameCell;
  *
  * @author Admin
  */
-class Client implements RemoteMovable {
+class Client implements Runnable, RemoteMovable {
+    private String host;
     private int port = 8686;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private BoardGameControlerInterface controler;
+    private GameControler controler;
 
-    public Client(BoardGameControlerInterface controler) {
-        this.controler = controler;
+    public Client(String host, GameControler controler) {
+        this.host = host;
+        this.controler = controler;        
+    }
+
+    @Override
+    public void run() {
         try {
-            socket = new Socket("192.168.11.100", port);            
+            socket = new Socket(host, port);            
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
         } catch (UnknownHostException ex) {
@@ -37,7 +43,13 @@ class Client implements RemoteMovable {
         }
         new Thread(new Listener()).start();
     }
-        
+
+    @Override
+    public boolean isConnected() {
+        return socket.isConnected();
+    }
+    
+     
     private class Listener implements Runnable {
 
         @Override
@@ -50,8 +62,7 @@ class Client implements RemoteMovable {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        
+        }        
     }
                          
     @Override

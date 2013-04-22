@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -23,6 +24,7 @@ import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.game.GameCell;
+import ua.vynnyk.translations.TranslateHelper;
 
 /**
  *
@@ -105,7 +107,9 @@ public class GameBoard extends JPanel {
     }
         
     private void actionCellClicked(Cell cell) {
-        controler.doMove(new GameCell(cell.getCellX(), cell.getCellY()));
+        if (!controler.doMove(new GameCell(cell.getCellX(), cell.getCellY()))) {
+            JOptionPane.showMessageDialog(null, TranslateHelper.getString("main.errormove"));
+        }            
     }
 
     public void clear() {

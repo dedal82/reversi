@@ -25,7 +25,6 @@ public interface BoardGameControlerInterface {
     
     public void newGame();
     public boolean doMove(GameCell cell);
-    public boolean doRemoteMove(GameCell cell);
     public void undoMove();
     public void startAIBattle();
     public void stopAIBattle();

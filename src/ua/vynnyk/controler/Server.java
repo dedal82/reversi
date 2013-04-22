@@ -17,24 +17,36 @@ import ua.vynnyk.game.GameCell;
  *
  * @author Admin
  */
-class Server implements RemoteMovable {
+class Server implements Runnable, RemoteMovable {
     private int port = 8686;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private BoardGameControlerInterface controler;
+    private GameControler controler;
     
-    public Server(BoardGameControlerInterface controler) {
-        this.controler = controler;
+    public Server(GameControler controler) {
+        this.controler = controler;        
+    }
+
+    @Override
+    public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             socket = serverSocket.accept();
             out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());            
+            in = new ObjectInputStream(socket.getInputStream());                                    
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
         new Thread(new Listener()).start();
+    }
+    
+    @Override
+    public boolean isConnected() {
+        if (socket != null) {
+            return socket.isConnected();
+        }
+        return false;
     }
     
     private class Listener implements Runnable {
