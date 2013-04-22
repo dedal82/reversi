@@ -333,7 +333,7 @@ public class GameForm extends JFrame {
         game.setOption("OPTION_AI_LEVEL", level);
     }    
     
-    private void saveGame() {
+    private void saveGame() {        
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (" + SAVE_EXTENTION + ")", SAVE_EXTENTION));
         if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {       
@@ -357,12 +357,12 @@ public class GameForm extends JFrame {
     }
     
     // change count and active player on view
-    private void changeCount(int first, int second) {
+    private void changeCount(int first, int second) {        
         countBoard.setCount(first, second);
         panelActivePlayer.removeAll();
         panelActivePlayer.add((Component) board.getCoin(game.getActivePlayer()));
         panelActivePlayer.validate();
-        panelActivePlayer.repaint();        
+        panelActivePlayer.repaint();                 
     }
 
     //refresh data from model to view

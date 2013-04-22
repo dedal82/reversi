@@ -4,9 +4,12 @@
  */
 package ua.vynnyk;
 
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.util.Locale;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.controler.GameControler;
+import ua.vynnyk.exceptions.EventQueueProxy;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.BoardGameReversi;
 import ua.vynnyk.options.Options;
@@ -29,7 +32,10 @@ public class Reversi {
         game.setOption(BoardGameReversi.OPTION_AI_LEVEL, Integer.parseInt(Options.getOption(OptionsList.LEVEL, "2")));        
         String locale = Options.getOption(OptionsList.LOCALE, "en_US");            
         TranslateHelper.setResources(new Locale(locale.substring(0, 2),locale.substring(3)));
-                       
+        
+        EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
+        queue.push(new EventQueueProxy());
+        
         setLookAndFeel();
         
         java.awt.EventQueue.invokeLater(new Runnable() {
