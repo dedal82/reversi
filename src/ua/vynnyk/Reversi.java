@@ -4,13 +4,12 @@
  */
 package ua.vynnyk;
 
-import ua.vynnyk.options.Options;
 import java.util.Locale;
-import java.util.StringTokenizer;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.controler.GameControler;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.BoardGameReversi;
+import ua.vynnyk.options.Options;
 import ua.vynnyk.options.OptionsList;
 import ua.vynnyk.translations.TranslateHelper;
 
