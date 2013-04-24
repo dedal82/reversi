@@ -39,7 +39,8 @@ class AIReversi implements AIInterface {
     private void addCorners() {
         final int width = game.getWidth();
         final int height = game.getHeight();
-        Set tmpSet = new HashSet(4);                      
+        Set tmpSet = new HashSet(4);  
+        
         cells.put(CELL_NEAR_CORNERS, new HashSet<GameCell>());
         
         addCorner(tmpSet, new GameCell(0, 0));
@@ -51,16 +52,18 @@ class AIReversi implements AIInterface {
     }
     
     private void addCorner(Set set, GameCell cell) {
-        set.add(cell);
         final Set<GameCell> nearSet = game.getNearCells(cell);
+        
+        set.add(cell);
         corners.put(cell, nearSet);
         cells.get(CELL_NEAR_CORNERS).addAll(nearSet);
     }
     
     private void addBorders() {
-        Set<GameCell> set = new HashSet<>();
         final int width = game.getWidth();
         final int height = game.getHeight();
+        Set<GameCell> set = new HashSet<>();
+        
         for (int x = 0; x < width; x++) {
             set.add(new GameCell(x, 0));
             set.add(new GameCell(x, height - 1));            
@@ -73,9 +76,10 @@ class AIReversi implements AIInterface {
     }
 
     private void addNearBorders() {
-        Set<GameCell> set = new HashSet<>();
         final int width = game.getWidth();
         final int height = game.getHeight();
+        Set<GameCell> set = new HashSet<>();
+        
         for (int x = 1; x < width - 1; x++) {
             set.add(new GameCell(x, 1));
             set.add(new GameCell(x, height - 2));            
@@ -90,6 +94,7 @@ class AIReversi implements AIInterface {
     private int getMoveLevel(GameCell cell, int maxLevel) {
         final EnumPlayer activePlayer = game.getActivePlayer();
         int level = 0;  
+        
         if (maxLevel >= LEVEL_1) {
             if (cells.get(CELL_BORDERS).contains(cell)) {
                 level = 1;
@@ -132,7 +137,8 @@ class AIReversi implements AIInterface {
         final int width = game.getWidth();
         final int height = game.getHeight();
         final int cX = cell.getX();
-        final int cY = cell.getY();              
+        final int cY = cell.getY();   
+        
         for (int i = 0; i < 360; i += 45) {
             int dx = (int) Math.round(Math.sin(Math.toRadians(i)));
             int dy = (int) Math.round(Math.cos(Math.toRadians(i)));
@@ -178,7 +184,8 @@ class AIReversi implements AIInterface {
     public GameCell getAIMove(int level) {        
         if (level < 0 || level > 2) {
             throw new IllegalArgumentException("AI level " + level + " doesn't exists");       
-        }        
+        } 
+        
         List<GameCell> moves = new ArrayList<>();
         final EnumPlayer activePlayer = game.getActivePlayer();
         final int widht = game.getWidth();
@@ -186,6 +193,7 @@ class AIReversi implements AIInterface {
         int maxCountReversed = 0;
         int maxLevel = -2;
         int countReversed;
+        
         for (int i = 0; i < widht; i++) {
             for (int j = 0; j < height; j++) {                
                 if (game.isCorrect(i, j, activePlayer)) {

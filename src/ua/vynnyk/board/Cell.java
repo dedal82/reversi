@@ -27,11 +27,5 @@ public class Cell extends JPanel {
 
     public int getCellY() {
         return cellY;
-    }  
-      /* for testing only*/ 
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//        g.drawString(cellX +"," +cellY, 0, 10);
-//    }        
+    }          
 }

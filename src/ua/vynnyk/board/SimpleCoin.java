@@ -6,6 +6,8 @@ package ua.vynnyk.board;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import javax.swing.JComponent;
 
 /**
@@ -23,8 +25,9 @@ public class SimpleCoin extends JComponent implements CoinInterface {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) { 
         super.paintComponent(g);
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(color);
         g.fillOval(0, 0, getWidth(), getHeight());
     }

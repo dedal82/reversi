@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
-import javax.swing.plaf.OptionPaneUI;
 import net.miginfocom.swing.MigLayout;
 import ua.vynnyk.components.ColorChooser;
 import ua.vynnyk.game.EnumPlayer;

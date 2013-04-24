@@ -232,6 +232,8 @@ public class GameForm extends JFrame {
         addListeners();
         pack();
         setLocationRelativeTo(null);
+        
+        game.newGame();
     }
 
     private void addListeners() {
@@ -241,6 +243,7 @@ public class GameForm extends JFrame {
             @Override
             public void PutCoin(PutCoinEvent e) {
                 final PutCoinEvent evt = e;
+                
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -253,6 +256,7 @@ public class GameForm extends JFrame {
             @Override
             public void ChangeCount(ChangeCountEvent e) { 
                 final ChangeCountEvent evt = e;
+                
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -267,6 +271,7 @@ public class GameForm extends JFrame {
             public void GameOver(GameOverEvent e) {
                 final String winmsg;
                 final EnumPlayer winner = e.getWinner();
+                
                 if (winner == EnumPlayer.FIRST) {
                     winmsg = TranslateHelper.getString("main.firstwin");
                 } else if (winner == EnumPlayer.SECOND) {
@@ -335,6 +340,7 @@ public class GameForm extends JFrame {
     
     private void saveGame() {        
         final JFileChooser fc = new JFileChooser();
+        
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (" + SAVE_EXTENTION + ")", SAVE_EXTENTION));
         if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {       
             if (!fc.getSelectedFile().getAbsolutePath().endsWith(SAVE_EXTENTION)) {
@@ -347,6 +353,7 @@ public class GameForm extends JFrame {
     
     private void loadGame() {
         final JFileChooser fc = new JFileChooser();
+        
         fc.setFileFilter(new FileNameExtensionFilter("Save game file (" + SAVE_EXTENTION + ")", SAVE_EXTENTION));
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {       
             game = GameUtility.loadGame(fc.getSelectedFile());

@@ -6,6 +6,7 @@ package ua.vynnyk.translations;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.UIManager;
 
 /**
  *
@@ -18,7 +19,11 @@ public class TranslateHelper {
                                         new Locale("ru", "RU")};  
     
     private static Locale currentLocale = Locale.US;    
-    private static ResourceBundle resources = ResourceBundle.getBundle(FILE_NAME, currentLocale);
+    private static ResourceBundle resources;
+    
+    static {
+        setResources(currentLocale);
+    }
     
     public static String getString(String resource) {
         try { 
@@ -31,6 +36,11 @@ public class TranslateHelper {
     public static void setResources(Locale locale) {                 
         resources = ResourceBundle.getBundle(FILE_NAME, locale);
         currentLocale = locale;
+        
+        UIManager.put("OptionPane.cancelButtonText", getString("optionpain.cancel"));
+        UIManager.put("OptionPane.noButtonText", getString("optionpain.no"));
+        UIManager.put("OptionPane.okButtonText", getString("optionpain.ok"));
+        UIManager.put("OptionPane.yesButtonText", getString("optionpain.yes"));
     }
     
     //not implemented yet. get list localization file in package

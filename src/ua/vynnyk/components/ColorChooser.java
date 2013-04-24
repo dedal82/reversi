@@ -40,6 +40,7 @@ public class ColorChooser extends JColorChooser {
         final JPanel previewPanel = new JPanel(new GridLayout(1, 2));
         final JLabel oldColorLabel = createColorLabel(getColor());        
         final JLabel colorLabel = createColorLabel(getColor());
+        
         previewPanel.setPreferredSize(new Dimension(200, 100));
         previewPanel.add(oldColorLabel);
         previewPanel.add(colorLabel);
@@ -57,6 +58,7 @@ public class ColorChooser extends JColorChooser {
     public static Color showDialog(Component component, String title, Color initial) {
         ColorChooser choose = new ColorChooser(initial);  
         JDialog dialog = createDialog(component, title, true, choose, null, null);
+        
         dialog.getContentPane().add(choose);
         dialog.pack();
         dialog.setVisible(true);
@@ -65,6 +67,7 @@ public class ColorChooser extends JColorChooser {
     
     private JLabel createColorLabel(Color color) {
         final JLabel colorLabel = new JLabel();
+        
         colorLabel.setOpaque(true);
         colorLabel.setBackground(color);
         //colorLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));

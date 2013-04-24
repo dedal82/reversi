@@ -54,7 +54,8 @@ public class BoardGameReversi extends AbstractBoardGame {
     }        
     
     Set<GameCell> getNearCells(GameCell cell) {        
-        Set<GameCell> cellsSet = new HashSet<>();      
+        Set<GameCell> cellsSet = new HashSet<>();   
+        
         for (int i = 0; i < 360; i += 45) {
             int dx = (int) Math.round(Math.sin(Math.toRadians(i)));
             int dy = (int) Math.round(Math.cos(Math.toRadians(i)));
@@ -71,9 +72,10 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     @Override
     public void newGame() {
-        EmptyBoard();
         final int width = getWidth();
-        final int height = getHeight();                          
+        final int height = getHeight(); 
+        
+        EmptyBoard();
         putCoin(new GameCell(width / 2 - 1, height / 2 - 1), EnumPlayer.FIRST);
         putCoin(new GameCell(width / 2, height / 2 - 1), EnumPlayer.SECOND);
         putCoin(new GameCell(width / 2, height / 2), EnumPlayer.FIRST);
@@ -106,7 +108,8 @@ public class BoardGameReversi extends AbstractBoardGame {
     private void doCorrectMove(GameCell cell) {
         final EnumPlayer player = getActivePlayer();
         final int x = cell.getX();
-        final int y = cell.getY();        
+        final int y = cell.getY();    
+        
         undoList.clear();
         undoList.add(cell);
         putCoin(x, y, player);
@@ -123,6 +126,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     
     int reversCoins(int x, int y, EnumPlayer player, boolean revers) {
         int count = 0;
+        
         for (int i = 0; i < 360; i += 45) {
             int dx = (int) Math.round(Math.sin(Math.toRadians(i)));
             int dy = (int) Math.round(Math.cos(Math.toRadians(i)));
@@ -140,6 +144,7 @@ public class BoardGameReversi extends AbstractBoardGame {
         int countRevers = 0;
         int i = x + dX;
         int j = y + dY;
+        
         while (i >= 0 && j>= 0 && i < width && j < height) {
             final EnumPlayer tmp_player = getPlayer(i, j);
             if (tmp_player == nextPlayer) {
@@ -193,8 +198,9 @@ public class BoardGameReversi extends AbstractBoardGame {
     // detecting other player in nearest game cells
     private boolean isNear(int x, int y, EnumPlayer nearPlayer) {
         final int w = getWidth();
-        final int h = getHeight();        
+        final int h = getHeight(); 
         Set<GameCell> set = getNearCells(new GameCell(x, y));
+        
         for (GameCell gameCell : set) {
             if (getPlayer(gameCell) == nearPlayer) {
                 return true;
@@ -213,6 +219,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     private EnumPlayer getWinner() {
         final int first = getCount(EnumPlayer.FIRST);
         final int second = getCount(EnumPlayer.SECOND);
+        
         if (first > second) {
             return EnumPlayer.FIRST;
         } else if (first < second) {
@@ -228,6 +235,7 @@ public class BoardGameReversi extends AbstractBoardGame {
         if (undoList.size() > 0) {            
             final EnumPlayer player = getPlayer(undoList.get(0));
             final EnumPlayer undoPlayer = getNextPlayer(player);
+            
             putCoin(undoList.remove(0), EnumPlayer.NONE);            
             for (GameCell gameCell : undoList) {
                 putCoin(gameCell, undoPlayer);                
@@ -246,6 +254,7 @@ public class BoardGameReversi extends AbstractBoardGame {
     @Override
     public GameCell doAIMove() {
         GameCell cell = ai.getAIMove((int) getOption(OPTION_AI_LEVEL));
+        
         doCorrectMove(cell);
         return cell;
     }                            

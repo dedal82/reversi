@@ -17,6 +17,7 @@ import javax.swing.event.EventListenerList;
  * @author dedal
  */
 abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
+    
     private int cellsX = 8;
     private int cellsY = 8;
     private EnumPlayer[][] board;
@@ -43,11 +44,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     }
     
     EnumPlayer getPlayer(int x, int y) {        
-        if (isInBoard(x, y)) {
-            return board[x][y];
-        } else {
-            return null; 
-        }          
+        return (isInBoard(x, y)) ? board[x][y] : null;                  
     } 
         
     void setPlayer(GameCell cell , EnumPlayer player) {
@@ -71,8 +68,8 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     }
     
     boolean isInBoard (int x, int y) {
-        return x >= 0 && x < getWidth() && 
-               y >= 0 && y < getHeight(); 
+        return (x >= 0) && (x < getWidth()) && 
+               (y >= 0) && (y < getHeight()); 
     } 
     
     final void EmptyBoard() {
@@ -136,7 +133,12 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
             
     @Override
     public String toString() {
-        return "AbstractBoardGame{" + "cellsX=" + cellsX + ", cellsY=" + cellsY + ", board=" + Arrays.deepToString(board) + ", activePlayer=" + activePlayer + ", score=" + score + ", listenerList=" + listenerList + '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("AbstractBoardGame{").append("cellsX=").append(cellsX)
+          .append(", cellsY=").append(cellsY).append(", board=")
+          .append(Arrays.deepToString(board)).append(", activePlayer=")
+          .append(activePlayer).append(", score=").append(score);      
+        return  sb.toString();
     }
     
     @Override
@@ -151,6 +153,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     
     void fireGameOverEvent(GameOverEvent e) {
         EventListener listeners[] = listenerList.getListeners(GameOverEventListener.class);
+        
         for (int i = 0; i < listeners.length; i++) {
             ((GameOverEventListener) listeners[i]).GameOver(e);            
        }                    
@@ -168,6 +171,7 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
     
     void firePutCoinEvent(PutCoinEvent e) {
         EventListener listeners[] = listenerList.getListeners(PutCoinEventListener.class);
+        
         for (int i = 0; i < listeners.length; i++) {
             ((PutCoinEventListener) listeners[i]).PutCoin(e);            
        }                    
@@ -183,8 +187,9 @@ abstract class AbstractBoardGame implements BoardGameInterface, Serializable {
         listenerList.remove(ChangeCountEventListener.class, listener);
     }
     
-    void fireChangeCountEvent(ChangeCountEvent e) {
+    void fireChangeCountEvent(ChangeCountEvent e) {        
         EventListener listeners[] = listenerList.getListeners(ChangeCountEventListener.class);
+        
         for (int i = 0; i < listeners.length; i++) {
             ((ChangeCountEventListener) listeners[i]).ChangeCount(e);            
        }                    
