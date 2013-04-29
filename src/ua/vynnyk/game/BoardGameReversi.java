@@ -253,7 +253,9 @@ public class BoardGameReversi extends AbstractBoardGame {
         
     @Override
     public GameCell doAIMove() {
-        GameCell cell = ai.getAIMove((int) getOption(OPTION_AI_LEVEL));
+        int level = (int) getOption(OPTION_AI_LEVEL);
+        
+        GameCell cell = ai.getAIMove(level);
         
         doCorrectMove(cell);
         return cell;

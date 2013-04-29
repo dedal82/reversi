@@ -211,6 +211,8 @@ class AIReversi implements AIInterface {
                 }
             }
         }
-        return moves.get((int) Math.floor(Math.random() * (moves.size())));
+        int rnd = (int) (Math.random() * moves.size());
+        System.out.println(rnd);
+        return moves.get(rnd);
     }                       
 }
