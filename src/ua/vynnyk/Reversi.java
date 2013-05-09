@@ -14,7 +14,7 @@ import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.BoardGameReversi;
 import ua.vynnyk.options.Options;
 import ua.vynnyk.options.OptionsList;
-import ua.vynnyk.translations.TranslateHelper;
+import ua.vynnyk.l10n.TranslateHelper;
 
 /**
  *

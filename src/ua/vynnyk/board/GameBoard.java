@@ -24,7 +24,7 @@ import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.BoardGameInterface;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.game.GameCell;
-import ua.vynnyk.translations.TranslateHelper;
+import ua.vynnyk.l10n.TranslateHelper;
 
 /**
  *

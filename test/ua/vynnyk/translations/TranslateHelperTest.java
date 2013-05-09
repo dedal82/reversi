@@ -4,6 +4,7 @@
  */
 package ua.vynnyk.translations;
 
+import ua.vynnyk.l10n.TranslateHelper;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.AfterClass;

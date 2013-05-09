@@ -30,7 +30,7 @@ import ua.vynnyk.components.ColorChooser;
 import ua.vynnyk.game.EnumPlayer;
 import ua.vynnyk.options.Options;
 import ua.vynnyk.options.OptionsList;
-import ua.vynnyk.translations.TranslateHelper;
+import ua.vynnyk.l10n.TranslateHelper;
 
 /**
  *

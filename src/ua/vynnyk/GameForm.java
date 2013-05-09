@@ -29,7 +29,7 @@ import ua.vynnyk.components.CountBoard;
 import ua.vynnyk.controler.BoardGameControlerInterface;
 import ua.vynnyk.game.*;
 import ua.vynnyk.layout.SquareLayout;
-import ua.vynnyk.translations.TranslateHelper;
+import ua.vynnyk.l10n.TranslateHelper;
 
 /**
  *
