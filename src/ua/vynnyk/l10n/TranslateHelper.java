@@ -13,7 +13,7 @@ import javax.swing.UIManager;
  * @author vynnyk
  */
 public class TranslateHelper {
-    private static final String FILE_NAME = "ua.vynnyk.translations.translate";
+    private static final String FILE_NAME = "ua.vynnyk.l10n.translate";
     private static final Locale [] locales = {Locale.US, 
                                         new Locale("uk", "UA"), 
                                         new Locale("ru", "RU")};  
